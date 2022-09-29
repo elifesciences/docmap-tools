@@ -1,0 +1,23 @@
+def tag;
+
+elifePipeline {
+
+    stage 'Checkout', {
+        checkout scm master
+    }
+    
+    stage 'Sandbox release', {
+        elifePypiRelease('test')
+    }
+    
+    stage 'Release', {
+        tag = elifePypiRelease()
+        elifeGitTagRevision(tag)
+    }
+
+    stage 'Downstream', {
+        elifeMainlineOnly {
+            build job: '/dependencies/dependencies-elife-bot-update-dependency', parameters: [string(name: 'package', value: 'docmaptools'), string(name: 'tag', value: tag)], wait: false
+        }
+    }
+}
