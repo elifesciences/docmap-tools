@@ -1,0 +1,9 @@
+*.log
+*.pyc
+*.py~
+venv/*
+release-venv/
+build/
+dist/
+docmaptools.egg-info
+.coverage
