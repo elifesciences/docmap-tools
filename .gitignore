@@ -7,3 +7,5 @@ build/
 dist/
 docmaptools.egg-info
 .coverage
+tests/tmp/*
+!tests/tmp/.keepme
