@@ -15,6 +15,7 @@ setup(
     license="MIT",
     install_requires=[
         "elifetools",
+        "requests",
     ],
     url="https://github.com/elifesciences/docmap-tools",
     maintainer="eLife Sciences Publications Ltd.",
