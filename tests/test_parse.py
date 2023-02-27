@@ -69,15 +69,28 @@ class TestGetWebContent(unittest.TestCase):
 
 
 class TestDocmapJson(unittest.TestCase):
-    def test_docmap_json(self):
+    def test_docmap_json_446694(self):
         docmap_string = read_fixture("2021.06.02.446694.docmap.json", mode="r")
         result = parse.docmap_json(docmap_string)
         # some simple assertions
         self.assertEqual(result.get("first-step"), "_:b0")
         self.assertEqual(len(result.get("steps")), 1)
 
+    def test_docmap_json_512253(self):
+        docmap_string = read_fixture("2022.10.17.512253.docmap.json", mode="r")
+        result = parse.docmap_json(docmap_string)
+        # some simple assertions
+        self.assertEqual(result.get("first-step"), "_:b0")
+        self.assertEqual(len(result.get("steps")), 3)
 
-class TestDocmapSteps(unittest.TestCase):
+
+class TestDocmapPreprint(unittest.TestCase):
+    def test_docmap_preprint(self):
+        "test case for when there is empty input"
+        self.assertEqual(parse.docmap_preprint({}), {})
+
+
+class TestDocmapSteps446694(unittest.TestCase):
     def setUp(self):
         docmap_string = read_fixture("2021.06.02.446694.docmap.json", mode="r")
         self.d_json = json.loads(docmap_string)
@@ -230,6 +243,139 @@ class TestDocmapSteps(unittest.TestCase):
         )
         result = parse.output_content(output_json)
         self.assertEqual(result, expected)
+
+
+class TestDocmapSteps512253(unittest.TestCase):
+    def setUp(self):
+        docmap_string = read_fixture("2022.10.17.512253.docmap.json", mode="r")
+        self.d_json = json.loads(docmap_string)
+
+    def test_docmap_steps(self):
+        "get the steps of the docmap"
+        result = parse.docmap_steps(self.d_json)
+        self.assertEqual(len(result), 3)
+
+    def test_docmap_first_step(self):
+        "get the first step according to the first-step value"
+        result = parse.docmap_first_step(self.d_json)
+
+        self.assertEqual(len(result), 4)
+        self.assertEqual(
+            sorted(result.keys()), ["actions", "assertions", "inputs", "next-step"]
+        )
+
+    def test_step_inputs(self):
+        "get inputs from the first step"
+        first_step = parse.docmap_first_step(self.d_json)
+        result = parse.step_inputs(first_step)
+        self.assertEqual(len(result), 0)
+        # step _:b1
+        step_1 = parse.next_step(self.d_json, first_step)
+        result = parse.step_inputs(step_1)
+        self.assertEqual(len(result), 1)
+        # step _:b2
+        step_2 = parse.next_step(self.d_json, step_1)
+        result = parse.step_inputs(step_2)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(step_2.get("next-step"), None)
+
+    def test_docmap_preprint(self):
+        "preprint data from the first step inputs"
+        result = parse.docmap_preprint(self.d_json)
+        self.assertDictEqual(
+            result,
+            {
+                "type": "preprint",
+                "doi": "10.1101/2022.10.17.512253",
+                "url": "https://www.biorxiv.org/content/10.1101/2022.10.17.512253v1",
+                "published": "2022-10-17",
+                "versionIdentifier": "1",
+                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/October_2022/18_Oct_22_Batch_1408/a6575018-6cfe-1014-94b3-ca3c122c1e09.meca",
+            },
+        )
+
+    def test_step_actions(self):
+        "get actions from the last step"
+        step_2 = parse.next_step(
+            self.d_json,
+            parse.next_step(self.d_json, parse.docmap_first_step(self.d_json)),
+        )
+        result = parse.step_actions(step_2)
+        self.assertEqual(len(result), 4)
+
+    def test_action_outputs(self):
+        "outputs from a step action"
+        first_step = parse.docmap_first_step(self.d_json)
+        first_action = parse.step_actions(first_step)[0]
+        result = parse.action_outputs(first_action)
+        self.assertEqual(len(result), 1)
+
+    def test_docmap_content(self):
+        "test parsing docmap JSON into docmap content structure"
+        result = parse.docmap_content(self.d_json)
+        expected = [
+            OrderedDict(
+                [
+                    ("type", "review-article"),
+                    ("published", "2023-02-09T16:36:07.240248+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:2jRPwqiXEe2WiaPpkX9z0A/content",
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "review-article"),
+                    ("published", "2023-02-09T16:36:08.237709+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:2ssR5qiXEe2eBA-GlPB-OA/content",
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "review-article"),
+                    ("published", "2023-02-09T16:36:09.046089+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:20aozqiXEe2cFHOdrUiwoQ/content",
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "evaluation-summary"),
+                    ("published", "2023-02-09T16:36:09.857359+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:28TBAKiXEe2gLa-4_Zmg3Q/content",
+                    ),
+                ]
+            ),
+        ]
+        self.assertEqual(result, expected)
+
+
+class TestContentStep(unittest.TestCase):
+    def test_content_step_none(self):
+        d_json = None
+        self.assertEqual(parse.content_step(d_json), None)
+
+    def test_content_step_empty(self):
+        d_json = {}
+        self.assertEqual(parse.content_step(d_json), None)
+
+    def test_content_step_missing(self):
+        content_step = {"actions": [{"outputs": [{"type": "no-match"}]}]}
+        d_json = {"first-step": "_:b0", "steps": {"_:b0": content_step}}
+        self.assertEqual(parse.content_step(d_json), None)
+
+    def test_content_step(self):
+        content_step = {"actions": [{"outputs": [{"type": "review-article"}]}]}
+        d_json = {"first-step": "_:b0", "steps": {"_:b0": content_step}}
+        self.assertEqual(parse.content_step(d_json), content_step)
 
 
 class TestPopulateDocmapContent(unittest.TestCase):
