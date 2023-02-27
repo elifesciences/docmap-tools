@@ -22,13 +22,18 @@ def docmap_json(docmap_string):
 
 def docmap_steps(d_json):
     "docmap steps"
-    return d_json.get("steps")
+    return d_json.get("steps") if d_json else {}
 
 
 def docmap_first_step(d_json):
     "find and return the first step of the docmap"
-    first_step_index = d_json.get("first-step")
+    first_step_index = d_json.get("first-step") if d_json else None
     return docmap_steps(d_json).get(first_step_index)
+
+
+def next_step(d_json, step_json):
+    "find and return the next step after the given step_json"
+    return docmap_steps(d_json).get(step_json.get("next-step"))
 
 
 def step_inputs(step_json):
@@ -37,9 +42,20 @@ def step_inputs(step_json):
 
 
 def docmap_preprint(d_json):
-    "assume the preprint data is the first step first inputs value"
+    "find the first preprint in the docmap"
     first_step = docmap_first_step(d_json)
-    return step_inputs(first_step)[0]
+    if first_step and first_step.get("inputs"):
+        # assume the preprint data is the first step first inputs value
+        return step_inputs(first_step)[0]
+    elif first_step and not first_step.get("inputs"):
+        # expect to find the preprint in the first step outputs
+        actions = step_actions(first_step)
+        for action in actions:
+            outputs = action_outputs(action)
+            for output in outputs:
+                if output.get("type") == "preprint":
+                    return output
+    return {}
 
 
 def step_actions(step_json):
@@ -60,7 +76,7 @@ def output_content(output_json):
     web_content = [
         content.get("url", {})
         for content in output_json.get("content", [])
-        if content.get("type") == "web-content"
+        if content.get("url").endswith("/content")
     ]
     # use the first web-content for now
     content_item["web-content"] = web_content[0] if len(web_content) >= 1 else None
@@ -74,11 +90,26 @@ def action_content(action_json):
     return output_content(outputs[0])
 
 
+def content_step(d_json):
+    "find the step which includes peer review content data"
+    step = docmap_first_step(d_json)
+    while step:
+        actions = step_actions(step)
+        for action in actions:
+            outputs = action_outputs(action)
+            for output in outputs:
+                if output.get("type") == "review-article":
+                    # return the first step found which has review-article content
+                    return step
+        # search the next step
+        step = next_step(d_json, step)
+
+
 def docmap_content(d_json):
     "abbreviated and simplified data for content outputs"
     content = []
     # the step from which to get the data
-    step = docmap_first_step(d_json)
+    step = content_step(d_json)
     # the actions
     actions = step_actions(step)
     # loop through the outputs
