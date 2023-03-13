@@ -64,14 +64,16 @@ def replace_tags(root):
             elem.set("ext-link-type", "uri")
             elem.set("{http://www.w3.org/1999/xlink}href", elem.get("href"))
             del elem.attrib["href"]
-    for parent_elem in root.findall(".//img/.."):
-        # add img placeholder text
-        parent_elem.text = " ".join(
-            [string.lstrip() for string in ["[image]", parent_elem.text] if string]
-        )
-        # remove img tag
-        elem = parent_elem.find("img")
-        parent_elem.remove(elem)
+    for elem in root.findall(".//img"):
+        # rename img tag to inline-graphic
+        elem.tag = "inline-graphic"
+        # convert src attribute to xlink:href
+        if elem.get("src"):
+            elem.set("{http://www.w3.org/1999/xlink}href", elem.get("src"))
+            del elem.attrib["src"]
+        # remove title attribute
+        if elem.get("title"):
+            del elem.attrib["title"]
     for elem in root.findall(".//li"):
         elem.tag = "list-item"
     for elem in root.findall(".//ol"):
