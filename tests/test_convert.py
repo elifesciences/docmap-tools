@@ -188,7 +188,7 @@ class TestReplaceTags(unittest.TestCase):
 
     def test_replace_tags_img(self):
         xml_string = b"<root><img/></root>"
-        expected = b"<root>[image]</root>"
+        expected = b"<root><inline-graphic /></root>"
         self.assertEqual(invoke_module_function(xml_string, "replace_tags"), expected)
 
     def test_replace_tags_li(self):
