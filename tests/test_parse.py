@@ -84,6 +84,133 @@ class TestDocmapJson(unittest.TestCase):
         self.assertEqual(len(result.get("steps")), 3)
 
 
+class TestDocmapSteps85111Sample(unittest.TestCase):
+    def setUp(self):
+        docmap_string = read_fixture("sample_docmap_for_85111.json", mode="r")
+        self.d_json = json.loads(docmap_string)
+
+    def test_docmap_steps(self):
+        "get the steps of the docmap"
+        result = parse.docmap_steps(self.d_json)
+        self.assertEqual(len(result), 5)
+
+    def test_docmap_first_step(self):
+        "get the first step according to the first-step value"
+        result = parse.docmap_first_step(self.d_json)
+
+        self.assertEqual(len(result), 4)
+        self.assertEqual(
+            sorted(result.keys()), ["actions", "assertions", "inputs", "next-step"]
+        )
+
+    def test_step_inputs(self):
+        "get inputs from the first step"
+        first_step = parse.docmap_first_step(self.d_json)
+        result = parse.step_inputs(first_step)
+        self.assertEqual(len(result), 0)
+        # step _:b1
+        step_1 = parse.next_step(self.d_json, first_step)
+        result = parse.step_inputs(step_1)
+        self.assertEqual(len(result), 1)
+        # step _:b2
+        step_2 = parse.next_step(self.d_json, step_1)
+        result = parse.step_inputs(step_2)
+        self.assertEqual(len(result), 1)
+        # step _:b3
+        step_3 = parse.next_step(self.d_json, step_2)
+        result = parse.step_inputs(step_3)
+        self.assertEqual(len(result), 0)
+        # step _:b4
+        step_4 = parse.next_step(self.d_json, step_3)
+        result = parse.step_inputs(step_4)
+        self.assertEqual(len(result), 5)
+        self.assertEqual(step_4.get("next-step"), None)
+
+    def test_docmap_preprint(self):
+        "preprint data from the first step inputs"
+        result = parse.docmap_preprint(self.d_json)
+        self.assertDictEqual(
+            result,
+            {
+                "type": "preprint",
+                "doi": "10.1101/2022.11.08.515698",
+                "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.515698v2",
+                "published": "2022-11-22",
+                "versionIdentifier": "2",
+                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/November_2022/23_Nov_22_Batch_1444/b0f4d90b-6c92-1014-9a2e-aae015926ab4.meca",
+            },
+        )
+
+    def test_docmap_latest_preprint(self):
+        "preprint data from the most recent step inputs"
+        result = parse.docmap_latest_preprint(self.d_json)
+        self.assertDictEqual(
+            result,
+            {
+                "type": "preprint",
+                "identifier": "85111",
+                "versionIdentifier": "2",
+                "doi": "10.7554/eLife.85111.2",
+            },
+        )
+
+    def test_step_actions(self):
+        "get actions from the last step"
+        step_2 = parse.next_step(
+            self.d_json,
+            parse.next_step(self.d_json, parse.docmap_first_step(self.d_json)),
+        )
+        result = parse.step_actions(step_2)
+        self.assertEqual(len(result), 4)
+
+    def test_action_outputs(self):
+        "outputs from a step action"
+        first_step = parse.docmap_first_step(self.d_json)
+        first_action = parse.step_actions(first_step)[0]
+        result = parse.action_outputs(first_action)
+        self.assertEqual(len(result), 1)
+
+    def test_docmap_content(self):
+        "test parsing docmap JSON into docmap content structure"
+        result = parse.docmap_content(self.d_json)
+        expected = [
+            OrderedDict(
+                [("type", "preprint"), ("published", None), ("web-content", None)]
+            ),
+            OrderedDict(
+                [
+                    ("type", "review-article"),
+                    ("published", "2023-04-14T13:42:24.130023+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:L_wlTNrKEe25pKupBGTeqA/content",
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "review-article"),
+                    ("published", "2023-04-14T13:42:24.975810+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:MHuA2trKEe2NmT9GM4xGlw/content",
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "evaluation-summary"),
+                    ("published", "2023-04-14T13:42:25.781585+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:MPYp6NrKEe2anmsrxlBg-w/content",
+                    ),
+                ]
+            ),
+        ]
+        self.assertEqual(result, expected)
+
+
 class TestDocmapPreprint(unittest.TestCase):
     def test_docmap_preprint(self):
         "test case for when there is empty input"
@@ -115,6 +242,17 @@ class TestDocmapSteps446694(unittest.TestCase):
     def test_docmap_preprint(self):
         "preprint data from the first step inputs"
         result = parse.docmap_preprint(self.d_json)
+        self.assertDictEqual(
+            result,
+            {
+                "doi": "10.1101/2021.06.02.446694",
+                "url": "https://doi.org/10.1101/2021.06.02.446694",
+            },
+        )
+
+    def test_docmap_latest_preprint(self):
+        "preprint data from the most recent step inputs"
+        result = parse.docmap_latest_preprint(self.d_json)
         self.assertDictEqual(
             result,
             {
@@ -291,6 +429,19 @@ class TestDocmapSteps512253(unittest.TestCase):
                 "published": "2022-10-17",
                 "versionIdentifier": "1",
                 "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/October_2022/18_Oct_22_Batch_1408/a6575018-6cfe-1014-94b3-ca3c122c1e09.meca",
+            },
+        )
+
+    def test_docmap_latest_preprint(self):
+        "preprint data from the most recent step inputs"
+        result = parse.docmap_latest_preprint(self.d_json)
+        self.assertDictEqual(
+            result,
+            {
+                "identifier": "84364",
+                "versionIdentifier": "",
+                "type": "preprint",
+                "doi": "10.7554/eLife.84364",
             },
         )
 
