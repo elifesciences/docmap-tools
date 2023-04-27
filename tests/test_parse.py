@@ -154,6 +154,31 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
             },
         )
 
+    def test_docmap_preprint_history(self):
+        "list of preprint history event data"
+        result = parse.docmap_preprint_history(self.d_json)
+        expected = [
+            {
+                "type": "preprint",
+                "doi": "10.1101/2022.11.08.515698",
+                "versionIdentifier": "2",
+                "date": "2022-11-22",
+            },
+            {
+                "type": "reviewed-preprint",
+                "doi": "10.7554/eLife.85111.1",
+                "versionIdentifier": "1",
+                "date": "2022-11-28T11:30:05+00:00",
+            },
+            {
+                "type": "reviewed-preprint",
+                "doi": "10.7554/eLife.85111.2",
+                "versionIdentifier": "2",
+                "date": "2023-04-14T13:42:25.781585+00:00",
+            },
+        ]
+        self.assertEqual(result, expected)
+
     def test_step_actions(self):
         "get actions from the last step"
         step_2 = parse.next_step(
@@ -439,11 +464,30 @@ class TestDocmapSteps512253(unittest.TestCase):
             result,
             {
                 "identifier": "84364",
-                "versionIdentifier": "",
+                "versionIdentifier": "1",
                 "type": "preprint",
-                "doi": "10.7554/eLife.84364",
+                "doi": "10.7554/eLife.84364.1",
             },
         )
+
+    def test_docmap_preprint_history(self):
+        "list of preprint history event data"
+        result = parse.docmap_preprint_history(self.d_json)
+        expected = [
+            {
+                "type": "preprint",
+                "doi": "10.1101/2022.10.17.512253",
+                "versionIdentifier": "1",
+                "date": "2022-10-17",
+            },
+            {
+                "type": "reviewed-preprint",
+                "doi": "10.7554/eLife.84364.1",
+                "versionIdentifier": "1",
+                "date": "2022-11-08T07:01:52+00:00",
+            },
+        ]
+        self.assertEqual(result, expected)
 
     def test_step_actions(self):
         "get actions from the last step"
@@ -507,6 +551,92 @@ class TestDocmapSteps512253(unittest.TestCase):
             ),
         ]
         self.assertEqual(result, expected)
+
+
+class TestPreprintEventOutput(unittest.TestCase):
+    def setUp(self):
+        self.output_type = "preprint"
+        self.output_doi = "10.7554/eLife.85111.1"
+        self.output_version_identifier = "1"
+        self.output_date_string = "2023-04-27T15:30:00+00:00"
+        self.step_json = {"assertions": [{"happened": self.output_date_string}]}
+
+    def test_not_found(self):
+        "test if first preprint is not yet found"
+        found_first_preprint = False
+        output_json = {
+            "type": self.output_type,
+            "doi": self.output_doi,
+            "versionIdentifier": self.output_version_identifier,
+            "published": self.output_date_string,
+        }
+        expected = {
+            "type": self.output_type,
+            "doi": self.output_doi,
+            "versionIdentifier": self.output_version_identifier,
+            "date": self.output_date_string,
+        }
+        result = parse.preprint_event_output(
+            output_json, self.step_json, found_first_preprint
+        )
+        self.assertDictEqual(result, expected)
+
+    def test_found(self):
+        "test if first preprint is already found"
+        found_first_preprint = True
+        output_json = {
+            "type": self.output_type,
+            "doi": self.output_doi,
+            "versionIdentifier": self.output_version_identifier,
+            "date": self.output_date_string,
+        }
+        expected = {
+            "type": "reviewed-preprint",
+            "doi": self.output_doi,
+            "versionIdentifier": self.output_version_identifier,
+            "date": self.output_date_string,
+        }
+        result = parse.preprint_event_output(
+            output_json, self.step_json, found_first_preprint
+        )
+        self.assertDictEqual(result, expected)
+
+
+class TestPreprintHappenedDate(unittest.TestCase):
+    def test_preprint_happened_date(self):
+        date_string = "2023-04-27T15:30:00+00:00"
+        step_json = {"assertions": [{"happened": date_string}]}
+        self.assertEqual(parse.preprint_happened_date(step_json), date_string)
+
+    def test_none(self):
+        step_json = None
+        self.assertEqual(parse.preprint_happened_date(step_json), None)
+
+
+class TestPreprintAlternateDate(unittest.TestCase):
+    def test_preprint_alternate_date(self):
+        date_string = "2023-04-27T15:30:00+00:00"
+        step_json = {
+            "actions": [
+                {
+                    "outputs": [
+                        {
+                            "type": "evaluation-summary",
+                            "published": date_string,
+                        }
+                    ]
+                }
+            ]
+        }
+        self.assertEqual(parse.preprint_alternate_date(step_json), date_string)
+
+    def test_no_outputs(self):
+        step_json = {"actions": [{"outputs": []}]}
+        self.assertEqual(parse.preprint_alternate_date(step_json), None)
+
+    def test_none(self):
+        step_json = None
+        self.assertEqual(parse.preprint_alternate_date(step_json), None)
 
 
 class TestContentStep(unittest.TestCase):

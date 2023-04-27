@@ -1,7 +1,7 @@
 {
     "@context": "https://w3id.org/docmaps/context.jsonld",
     "type": "docmap",
-    "id": "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.10.17.512253",
+    "id": "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/by-publisher/elife/get-by-manuscript-id?manuscript_id=84364",
     "created": "2022-11-08T07:01:52+00:00",
     "updated": "2022-11-08T07:01:52+00:00",
     "publisher": {
@@ -52,9 +52,9 @@
                     "outputs": [
                         {
                             "identifier": "84364",
-                            "versionIdentifier": "",
+                            "versionIdentifier": "1",
                             "type": "preprint",
-                            "doi": "10.7554/eLife.84364"
+                            "doi": "10.7554/eLife.84364.1"
                         }
                     ]
                 }
@@ -72,8 +72,8 @@
                 {
                     "item": {
                         "type": "preprint",
-                        "doi": "10.7554/eLife.84364",
-                        "versionIdentifier": ""
+                        "doi": "10.7554/eLife.84364.1",
+                        "versionIdentifier": "1"
                     },
                     "status": "draft"
                 }
@@ -105,6 +105,8 @@
                         {
                             "type": "review-article",
                             "published": "2023-02-09T16:36:07.240248+00:00",
+                            "doi": "10.7554/eLife.84364.1.sa1",
+                            "url": "https://doi.org/10.7554/eLife.84364.1.sa1",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -136,6 +138,8 @@
                         {
                             "type": "review-article",
                             "published": "2023-02-09T16:36:08.237709+00:00",
+                            "doi": "10.7554/eLife.84364.1.sa2",
+                            "url": "https://doi.org/10.7554/eLife.84364.1.sa2",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -167,6 +171,8 @@
                         {
                             "type": "review-article",
                             "published": "2023-02-09T16:36:09.046089+00:00",
+                            "doi": "10.7554/eLife.84364.1.sa3",
+                            "url": "https://doi.org/10.7554/eLife.84364.1.sa3",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -207,6 +213,8 @@
                         {
                             "type": "evaluation-summary",
                             "published": "2023-02-09T16:36:09.857359+00:00",
+                            "doi": "10.7554/eLife.84364.1.sa4",
+                            "url": "https://doi.org/10.7554/eLife.84364.1.sa4",
                             "content": [
                                 {
                                     "type": "web-page",
