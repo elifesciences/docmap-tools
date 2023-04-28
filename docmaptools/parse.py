@@ -80,6 +80,79 @@ def docmap_latest_preprint(d_json):
     return most_recent_output
 
 
+def docmap_preprint_history(d_json):
+    "return a list of events in a preprint publication history from the docmap"
+    step_json = docmap_first_step(d_json)
+    preprint_events = []
+    found_first_preprint = False
+    while step_json:
+        for action_json in step_actions(step_json):
+            for output_json in action_outputs(action_json):
+                if output_json.get("type") == "preprint":
+                    # decide whether to record this step
+                    if not output_json.get("identifier") and found_first_preprint:
+                        continue
+                    # collect the preprint details
+                    event_details = preprint_event_output(
+                        output_json, step_json, found_first_preprint
+                    )
+                    # append the events details to the matser list
+                    preprint_events.append(event_details)
+
+                    # will have found the preprint from the first matched step
+                    found_first_preprint = True
+        # search the next step
+        step_json = next_step(d_json, step_json)
+    return preprint_events
+
+
+def preprint_event_output(output_json, step_json, found_first_preprint):
+    "collect preprint event data from the output and step actions"
+    event_details = {}
+    # set the type
+    if found_first_preprint:
+        event_details["type"] = "reviewed-preprint"
+    else:
+        event_details["type"] = "preprint"
+    # copy over these properties
+    for key in ["doi", "versionIdentifier"]:
+        event_details[key] = output_json.get(key)
+    # set the date
+    if found_first_preprint:
+        event_details["date"] = preprint_happened_date(step_json)
+        if not event_details.get("date"):
+            event_details["date"] = preprint_alternate_date(step_json)
+    else:
+        event_details["date"] = output_json.get("published")
+    return event_details
+
+
+def preprint_happened_date(step_json):
+    "happened date from a preprint step assertions"
+    # look at assertions
+    if not step_json or not step_json.get("assertions"):
+        return None
+    for assertion in step_json.get("assertions", []):
+        if assertion.get("happened"):
+            return assertion.get("happened")
+    return None
+
+
+def preprint_alternate_date(step_json):
+    "date for a preprint from its step outputs when no happened date is available"
+    # if no date is yet found, look at other action output
+    if not step_json or not step_actions(step_json):
+        return None
+    for action_json in step_actions(step_json):
+        for output_json in action_outputs(action_json):
+            if (
+                output_json.get("published")
+                and output_json.get("type") == "evaluation-summary"
+            ):
+                return output_json.get("published")
+    return None
+
+
 def step_actions(step_json):
     "return the actions of the step"
     return step_json.get("actions")
