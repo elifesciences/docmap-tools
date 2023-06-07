@@ -85,6 +85,15 @@ def docmap_preprint_history(d_json):
     step_json = docmap_first_step(d_json)
     preprint_events = []
     found_first_preprint = False
+    # add preprint first
+    if docmap_preprint(d_json):
+        # collect the preprint details
+        event_details = preprint_event_output(
+            docmap_preprint(d_json), step_json, found_first_preprint
+        )
+        # append the events details to the matser list
+        preprint_events.append(event_details)
+        found_first_preprint = True
     while step_json:
         for action_json in step_actions(step_json):
             for output_json in action_outputs(action_json):
@@ -97,7 +106,8 @@ def docmap_preprint_history(d_json):
                         output_json, step_json, found_first_preprint
                     )
                     # append the events details to the matser list
-                    preprint_events.append(event_details)
+                    if event_details.get("date"):
+                        preprint_events.append(event_details)
 
                     # will have found the preprint from the first matched step
                     found_first_preprint = True
@@ -133,7 +143,7 @@ def preprint_happened_date(step_json):
     if not step_json or not step_json.get("assertions"):
         return None
     for assertion in step_json.get("assertions", []):
-        if assertion.get("happened"):
+        if assertion.get("status") == "manuscript-published" and assertion.get("happened"):
             return assertion.get("happened")
     return None
 
@@ -147,7 +157,7 @@ def preprint_alternate_date(step_json):
         for output_json in action_outputs(action_json):
             if (
                 output_json.get("published")
-                and output_json.get("type") == "evaluation-summary"
+                and output_json.get("type") == "preprint"
             ):
                 return output_json.get("published")
     return None
