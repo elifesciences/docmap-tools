@@ -76,6 +76,21 @@ def replace_tags(root):
             del elem.attrib["title"]
     for elem in root.findall(".//li"):
         elem.tag = "list-item"
+        # copy the contnet to a p tag
+        p_tag = Element("p")
+        p_tag.text = elem.text
+        p_tag.tail = elem.tail
+        # remove old tag content
+        elem.text = None
+        elem.tail = None
+        # copy the tags to the p tag
+        for tag_index, child_tag in enumerate(elem.iterfind("*")):
+            # insert into the new tag
+            p_tag.insert(tag_index, child_tag)
+            # remove old tag
+            elem.remove(child_tag)
+        # insert the p tag
+        elem.insert(0, p_tag)
     for elem in root.findall(".//ol"):
         elem.tag = "list"
         elem.set("list-type", "order")
