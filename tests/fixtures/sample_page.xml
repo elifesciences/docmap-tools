@@ -4,11 +4,11 @@
 <p>This paper provides experimental and modeling analysis of the inter-brain coupling of socially interacting bats, and reports that coordinated brain activity evolves at a slower time scale than the activity describing the differences. Specifically, the paper finds that there is an attracting submanifold corresponding to the mean (or "common mode") of neural activity, and that the dynamics in the orthogonal eigenmode, corresponding to the difference in brain activity, decays rapidly. These rapid decays in the difference mode are referred to as "catch up" activity.</p>
 <p>There are two main findings:</p>
 <list list-type="order">
-<list-item>Neural activity (especially higher frequency LFP activity in the 30-150Hz range) is modulated by social context. Specifically, the ratio of the averaged, moment-to-moment MEAN:DIFF ratio is much higher when the bats are in a single chamber, clearly indicating that the animals are coordinating their neural activity. This change also seems to hold -- although not as striking -- in lower-frequency LFP and spiking activity.</list-item>
-</list>
+<list-item><p>Neural activity (especially higher frequency LFP activity in the 30-150Hz range) is modulated by social context. Specifically, the ratio of the averaged, moment-to-moment MEAN:DIFF ratio is much higher when the bats are in a single chamber, clearly indicating that the animals are coordinating their neural activity. This change also seems to hold -- although not as striking -- in lower-frequency LFP and spiking activity.</p>
+</list-item></list>
 <list start="2" list-type="order">
-<list-item>The time scales of the mean vs. difference dynamics are segregated: the "difference dynamics" evolve at a faster time scale than "similarity dynamics", seems to be well supported.</list-item>
-</list>
+<list-item><p>The time scales of the mean vs. difference dynamics are segregated: the "difference dynamics" evolve at a faster time scale than "similarity dynamics", seems to be well supported.</p>
+</list-item></list>
 <p>The basic finding is presented in Figure 1. The rest of the paper is focused on a modeling study to garner further insight into the dynamics.</p>
 <p>Weaknesses:</p>
 <p>This is an entirely phenomenological paper, and while it claims to garner "mechanistic insight", it is unclear what that means.</p>
