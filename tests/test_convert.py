@@ -23,7 +23,7 @@ class TestConvertHtml(unittest.TestCase):
         string = (
             b"<p>"
             b"<em><strong>Test</strong></em>"
-            b"<ul><li><em>dot</em></li></ul>"
+            b"<ul><li>Text <em><strong>dot</strong></em> tail</li></ul>"
             b"</p>"
         )
         expected = (
@@ -31,7 +31,11 @@ class TestConvertHtml(unittest.TestCase):
             b"<body>"
             b"<p>"
             b"<italic><bold>Test</bold></italic>"
-            b'<list list-type="bullet"><list-item><italic>dot</italic></list-item></list>'
+            b'<list list-type="bullet">'
+            b"<list-item>"
+            b"<p>Text <italic><bold>dot</bold></italic> tail</p>"
+            b"</list-item>"
+            b"</list>"
             b"</p></body>"
             b"</root>"
         )
@@ -193,7 +197,7 @@ class TestReplaceTags(unittest.TestCase):
 
     def test_replace_tags_li(self):
         xml_string = b"<root><li/></root>"
-        expected = b"<root><list-item /></root>"
+        expected = b"<root><list-item><p /></list-item></root>"
         self.assertEqual(invoke_module_function(xml_string, "replace_tags"), expected)
 
     def test_replace_tags_ol(self):
