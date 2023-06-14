@@ -24,6 +24,9 @@ class TestConvertHtml(unittest.TestCase):
             b"<p>"
             b"<em><strong>Test</strong></em>"
             b"<ul><li>Text <em><strong>dot</strong></em> tail</li></ul>"
+            b"<ul><li><em>Italic.</em></li></ul>"
+            b"<ul><li><p>Content already wrapped in a p tag.</p></li></ul>"
+            b"<ul><li>Item with <p>internal p tag</p></li></ul>"
             b"</p>"
         )
         expected = (
@@ -35,6 +38,15 @@ class TestConvertHtml(unittest.TestCase):
             b"<list-item>"
             b"<p>Text <italic><bold>dot</bold></italic> tail</p>"
             b"</list-item>"
+            b"</list>"
+            b'<list list-type="bullet">'
+            b"<list-item><p><italic>Italic.</italic></p></list-item>"
+            b"</list>"
+            b'<list list-type="bullet">'
+            b"<list-item><p>Content already wrapped in a p tag.</p></list-item>"
+            b"</list>"
+            b'<list list-type="bullet">'
+            b"<list-item><p>Item with <p>internal p tag</p></p></list-item>"
             b"</list>"
             b"</p></body>"
             b"</root>"
