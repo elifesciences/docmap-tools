@@ -42,6 +42,9 @@ def html_to_xml(root):
     # convert blockquote tags
     blockquote_tags(root)
 
+    # convert break tags
+    break_tags(root)
+
     # create article-title tag
     article_title_tag(root)
 
@@ -100,6 +103,8 @@ def replace_tags(root):
     for elem in root.findall(".//ul"):
         elem.tag = "list"
         elem.set("list-type", "bullet")
+    for elem in root.findall(".//br"):
+        elem.tag = "break"
 
 
 def blockquote_tags(root):
@@ -118,6 +123,33 @@ def blockquote_tags(root):
                 root.remove(elem)
         else:
             prev_elem = elem
+
+
+def break_tags(root):
+    "convert break tag to p tag"
+    # detect break tag as a direct descendant of a p tag
+    for p_index, elem in enumerate(root.iterfind("p")):
+        # find break tags
+        break_tag_indexes = []
+        for tag_index, child_tag in enumerate(elem.iterfind("*")):
+            if child_tag.tag == "break":
+                break_tag_indexes.append(tag_index)
+
+        # process the list in reverse order so the indexes are reliable
+        break_tag_indexes.reverse()
+        for break_index in break_tag_indexes:
+            p_tag = Element("p")
+            # note: does not retain any text wrapped by a break tag
+            p_tag.text = elem[break_index].tail
+
+            for after_break_tag_index, after_break_tag in enumerate(elem.iterfind("*")):
+                if after_break_tag_index > break_index:
+                    p_tag.append(after_break_tag)
+                    elem.remove(after_break_tag)
+
+            elem.remove(elem[break_index])
+
+            root.insert(p_index + 1, p_tag)
 
 
 def article_title_tag(root):
