@@ -12,9 +12,14 @@ class TestConvertHtml(unittest.TestCase):
         self.assertEqual(content, expected, "got %s" % content)
 
     def test_html_to_xml_parse_error(self):
-        string = b"<p><strong><em>Test</strong></em><br></p>"
+        string = b"<p><strong><em>Test</strong></em><br>More <em>here</em>.</p>"
         expected = (
-            b"<root><body><p><italic><bold>Test</bold></italic><br /></p></body></root>"
+            b"<root>"
+            b"<body>"
+            b"<p><italic><bold>Test</bold></italic></p>"
+            b"<p>More <italic>here</italic>.</p>"
+            b"</body>"
+            b"</root>"
         )
         content = convert.convert_html_string(string)
         self.assertEqual(content, expected)
@@ -53,6 +58,60 @@ class TestConvertHtml(unittest.TestCase):
         )
         content = convert.convert_html_string(string)
         self.assertEqual(content, expected)
+
+
+class TestBreakTags(unittest.TestCase):
+    "tests for convert.break_tags()"
+
+    def test_break_tags(self):
+        "simple example with only on break tag"
+        xml_string = "<root><p>Start.<break/>Continued.</p></root>"
+        expected = b"<root><p>Start.</p><p>Continued.</p></root>"
+        root = ElementTree.fromstring(xml_string)
+        convert.break_tags(root)
+        self.assertEqual(ElementTree.tostring(root), expected)
+
+    def test_tags_after_break(self):
+        "example with tags after the break tag"
+        xml_string = (
+            "<root><p>Start.<break/>Continued <italic>here</italic>.</p></root>"
+        )
+        expected = b"<root><p>Start.</p><p>Continued <italic>here</italic>.</p></root>"
+        root = ElementTree.fromstring(xml_string)
+        convert.break_tags(root)
+        self.assertEqual(ElementTree.tostring(root), expected)
+
+    def test_multiple_break_tags(self):
+        "example with multiple break tags to convert to p tags"
+        xml_string = (
+            "<root>"
+            "<p>Start.<break/>"
+            "Middle.<break/>"
+            "Nearly <italic><bold>there</bold></italic>.<break/>"
+            "Example where <break>this text is lost</break>"
+            "The end!</p>"
+            "</root>"
+        )
+        expected = (
+            b"<root>"
+            b"<p>Start.</p>"
+            b"<p>Middle.</p>"
+            b"<p>Nearly <italic><bold>there</bold></italic>.</p>"
+            b"<p>Example where </p>"
+            b"<p>The end!</p>"
+            b"</root>"
+        )
+        root = ElementTree.fromstring(xml_string)
+        convert.break_tags(root)
+        self.assertEqual(ElementTree.tostring(root), expected)
+
+    def test_unmatched_close_tag(self):
+        "example where the break tag separates an inline formatting open and close tag"
+        xml_string = "<root>" "<p>This <italic>is<break/></italic>ugly.</p>" "</root>"
+        expected = b"<root><p>This <italic>is<break /></italic>ugly.</p></root>"
+        root = ElementTree.fromstring(xml_string)
+        convert.break_tags(root)
+        self.assertEqual(ElementTree.tostring(root), expected)
 
 
 def invoke_module_function(string, function_name):
