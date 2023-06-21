@@ -127,29 +127,33 @@ def blockquote_tags(root):
 
 def break_tags(root):
     "convert break tag to p tag"
-    # detect break tag as a direct descendant of a p tag
-    for p_index, elem in enumerate(root.iterfind("p")):
-        # find break tags
-        break_tag_indexes = []
-        for tag_index, child_tag in enumerate(elem.iterfind("*")):
-            if child_tag.tag == "break":
-                break_tag_indexes.append(tag_index)
+    # find p tag parent to later insert the new p tag
+    for p_tag_parent in root.iterfind(".//p/.."):
+        # detect break tag as a direct descendant of a p tag
+        for p_index, elem in enumerate(p_tag_parent.iterfind("p")):
+            # find break tags
+            break_tag_indexes = []
+            for tag_index, child_tag in enumerate(elem.iterfind("*")):
+                if child_tag.tag == "break":
+                    break_tag_indexes.append(tag_index)
 
-        # process the list in reverse order so the indexes are reliable
-        break_tag_indexes.reverse()
-        for break_index in break_tag_indexes:
-            p_tag = Element("p")
-            # note: does not retain any text wrapped by a break tag
-            p_tag.text = elem[break_index].tail
+            # process the list in reverse order so the indexes are reliable
+            break_tag_indexes.reverse()
+            for break_index in break_tag_indexes:
+                p_tag = Element("p")
+                # note: does not retain any text wrapped by a break tag
+                p_tag.text = elem[break_index].tail
 
-            for after_break_tag_index, after_break_tag in enumerate(elem.iterfind("*")):
-                if after_break_tag_index > break_index:
-                    p_tag.append(after_break_tag)
-                    elem.remove(after_break_tag)
+                for after_break_tag_index, after_break_tag in enumerate(
+                    elem.iterfind("*")
+                ):
+                    if after_break_tag_index > break_index:
+                        p_tag.append(after_break_tag)
+                        elem.remove(after_break_tag)
 
-            elem.remove(elem[break_index])
+                elem.remove(elem[break_index])
 
-            root.insert(p_index + 1, p_tag)
+                p_tag_parent.insert(p_index + 1, p_tag)
 
 
 def article_title_tag(root):
