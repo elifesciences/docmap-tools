@@ -105,6 +105,34 @@ class TestBreakTags(unittest.TestCase):
         convert.break_tags(root)
         self.assertEqual(ElementTree.tostring(root), expected)
 
+    def test_nested_p_tag(self):
+        "example with a body tag and p tag inside a disp-quote tag"
+        xml_string = (
+            "<root>"
+            "<body>"
+            "<p>First.</p>"
+            '<disp-quote content-type="editor-comment">'
+            "<p>Quotation.<break/>"
+            "Another quotation</p>"
+            "</disp-quote>"
+            "</body>"
+            "</root>"
+        )
+        expected = (
+            b"<root>"
+            b"<body>"
+            b"<p>First.</p>"
+            b'<disp-quote content-type="editor-comment">'
+            b"<p>Quotation.</p>"
+            b"<p>Another quotation</p>"
+            b"</disp-quote>"
+            b"</body>"
+            b"</root>"
+        )
+        root = ElementTree.fromstring(xml_string)
+        convert.break_tags(root)
+        self.assertEqual(ElementTree.tostring(root), expected)
+
     def test_unmatched_close_tag(self):
         "example where the break tag separates an inline formatting open and close tag"
         xml_string = "<root>" "<p>This <italic>is<break/></italic>ugly.</p>" "</root>"
