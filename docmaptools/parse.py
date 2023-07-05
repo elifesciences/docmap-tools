@@ -41,6 +41,11 @@ def step_inputs(step_json):
     return step_json.get("inputs")
 
 
+def step_assertions(step_json):
+    "return the assertions of the step"
+    return step_json.get("assertions")
+
+
 def docmap_preprint(d_json):
     "find the first preprint in the docmap"
     first_step = docmap_first_step(d_json)
@@ -116,6 +121,19 @@ def docmap_preprint_history(d_json):
     return preprint_events
 
 
+def preprint_review_date(d_json):
+    "review date for the first preprint taken from assertions data"
+    step_json = docmap_first_step(d_json)
+    if not step_json:
+        return None
+    while step_json:
+        if preprint_review_happened_date(step_json):
+            return preprint_review_happened_date(step_json)
+        # search the next step
+        step_json = next_step(d_json, step_json)
+    return None
+
+
 def preprint_event_output(output_json, step_json, found_first_preprint):
     "collect preprint event data from the output and step actions"
     event_details = {}
@@ -137,15 +155,30 @@ def preprint_event_output(output_json, step_json, found_first_preprint):
     return event_details
 
 
-def preprint_happened_date(step_json):
-    "happened date from a preprint step assertions"
+def preprint_assertion_happened_date(step_json, status):
+    "happened date from a preprint step assertions of status"
     # look at assertions
-    if not step_json or not step_json.get("assertions"):
+    if not step_json or not step_assertions(step_json):
         return None
-    for assertion in step_json.get("assertions", []):
-        if assertion.get("status") == "manuscript-published" and assertion.get("happened"):
+    for assertion in step_assertions(step_json):
+        if (
+            assertion.get("status") == status
+            and assertion.get("happened")
+            and assertion.get("item")
+            and assertion.get("item").get("type") == "preprint"
+        ):
             return assertion.get("happened")
     return None
+
+
+def preprint_happened_date(step_json):
+    "happened date from a preprint assertion of status manuscript-published"
+    return preprint_assertion_happened_date(step_json, "manuscript-published")
+
+
+def preprint_review_happened_date(step_json):
+    "happened date from a preprint assertion of status under-review"
+    return preprint_assertion_happened_date(step_json, "under-review")
 
 
 def preprint_alternate_date(step_json):
