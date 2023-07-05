@@ -167,6 +167,12 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
+    def test_preprint_review_date(self):
+        "first preprint under-review date"
+        result = parse.preprint_review_date(self.d_json)
+        expected = "2022-11-28T11:30:05+00:00"
+        self.assertEqual(result, expected)
+
     def test_step_actions(self):
         "get actions from the last step"
         step_2 = parse.next_step(
@@ -385,6 +391,19 @@ class TestDocmapPreprint(unittest.TestCase):
         self.assertEqual(parse.docmap_preprint({}), {})
 
 
+class TestPreprintReviewDate(unittest.TestCase):
+    "tests for parse.preprint_review_date()"
+
+    def test_preprint_review_date(self):
+        "test case for when there is empty input"
+        self.assertEqual(parse.preprint_review_date({}), None)
+
+    def test_no_assertions(self):
+        "test case for steps but no assertions"
+        d_json = {"first-step": "_:b0", "steps": {"_:b0": {"assertions": []}}}
+        self.assertEqual(parse.preprint_review_date(d_json), None)
+
+
 class TestDocmapSteps446694(unittest.TestCase):
     def setUp(self):
         docmap_string = read_fixture("2021.06.02.446694.docmap.json", mode="r")
@@ -585,6 +604,21 @@ class TestDocmapSteps512253(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(step_2.get("next-step"), None)
 
+    def test_step_assertions(self):
+        "get assertions from the first step"
+        first_step = parse.docmap_first_step(self.d_json)
+        result = parse.step_assertions(first_step)
+        self.assertEqual(len(result), 1)
+        # step _:b1
+        step_1 = parse.next_step(self.d_json, first_step)
+        result = parse.step_assertions(step_1)
+        self.assertEqual(len(result), 2)
+        # step _:b2
+        step_2 = parse.next_step(self.d_json, step_1)
+        result = parse.step_assertions(step_2)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(step_2.get("next-step"), None)
+
     def test_docmap_preprint(self):
         "preprint data from the first step inputs"
         result = parse.docmap_preprint(self.d_json)
@@ -698,7 +732,11 @@ class TestPreprintEventOutput(unittest.TestCase):
         self.output_date_string = "2023-04-27T15:30:00+00:00"
         self.step_json = {
             "assertions": [
-                {"status": "manuscript-published", "happened": self.output_date_string}
+                {
+                    "status": "manuscript-published",
+                    "happened": self.output_date_string,
+                    "item": {"type": "preprint"},
+                }
             ]
         }
 
@@ -747,13 +785,42 @@ class TestPreprintHappenedDate(unittest.TestCase):
     def test_preprint_happened_date(self):
         date_string = "2023-04-27T15:30:00+00:00"
         step_json = {
-            "assertions": [{"status": "manuscript-published", "happened": date_string}]
+            "assertions": [
+                {
+                    "status": "manuscript-published",
+                    "happened": date_string,
+                    "item": {"type": "preprint"},
+                }
+            ]
         }
         self.assertEqual(parse.preprint_happened_date(step_json), date_string)
 
     def test_none(self):
         step_json = None
         self.assertEqual(parse.preprint_happened_date(step_json), None)
+
+
+class TestPreprintReviewHappenedDate(unittest.TestCase):
+    "tests for parse.preprint_review_happened_date()"
+
+    def test_happened_date(self):
+        "test returning a happened date"
+        date_string = "2023-04-27T15:30:00+00:00"
+        step_json = {
+            "assertions": [
+                {
+                    "status": "under-review",
+                    "happened": date_string,
+                    "item": {"type": "preprint"},
+                }
+            ]
+        }
+        self.assertEqual(parse.preprint_review_happened_date(step_json), date_string)
+
+    def test_none(self):
+        "test if there is no step data"
+        step_json = None
+        self.assertEqual(parse.preprint_review_happened_date(step_json), None)
 
 
 class TestPreprintAlternateDate(unittest.TestCase):
