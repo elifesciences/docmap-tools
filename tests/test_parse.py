@@ -160,10 +160,13 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
         expected = [
             {
                 "type": "preprint",
-                "doi": "10.1101/2022.11.08.515698",
-                "versionIdentifier": "2",
                 "date": "2022-11-22",
-            },
+                "doi": "10.1101/2022.11.08.515698",
+                "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.515698v2",
+                "published": "2022-11-22",
+                "versionIdentifier": "2",
+                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/November_2022/23_Nov_22_Batch_1444/b0f4d90b-6c92-1014-9a2e-aae015926ab4.meca",
+            }
         ]
         self.assertEqual(result, expected)
 
@@ -312,21 +315,30 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
         expected = [
             {
                 "type": "preprint",
-                "doi": "10.1101/2023.02.14.528498",
-                "versionIdentifier": "2",
                 "date": "2023-02-21",
+                "doi": "10.1101/2023.02.14.528498",
+                "url": "https://www.biorxiv.org/content/10.1101/2023.02.14.528498v2",
+                "versionIdentifier": "2",
+                "published": "2023-02-21",
+                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/February_2023/22_Feb_23_Batch_1531/c27a22b7-6c43-1014-aa80-efc7cf011f1d.meca",
             },
             {
                 "type": "reviewed-preprint",
+                "date": "TBC",
+                "published": "TBC",
+                "identifier": "86628",
                 "doi": "10.7554/eLife.86628.1",
                 "versionIdentifier": "1",
-                "date": "TBC",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
             },
             {
                 "type": "reviewed-preprint",
+                "date": "TBC",
+                "published": "TBC",
+                "identifier": "86628",
                 "doi": "10.7554/eLife.86628.2",
                 "versionIdentifier": "2",
-                "date": "TBC",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
             },
         ]
         self.assertEqual(result, expected)
@@ -653,9 +665,12 @@ class TestDocmapSteps512253(unittest.TestCase):
         expected = [
             {
                 "type": "preprint",
-                "doi": "10.1101/2022.10.17.512253",
-                "versionIdentifier": "1",
                 "date": "2022-10-17",
+                "doi": "10.1101/2022.10.17.512253",
+                "url": "https://www.biorxiv.org/content/10.1101/2022.10.17.512253v1",
+                "published": "2022-10-17",
+                "versionIdentifier": "1",
+                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/October_2022/18_Oct_22_Batch_1408/a6575018-6cfe-1014-94b3-ca3c122c1e09.meca",
             },
         ]
         self.assertEqual(result, expected)
@@ -751,9 +766,10 @@ class TestPreprintEventOutput(unittest.TestCase):
         }
         expected = {
             "type": self.output_type,
+            "date": self.output_date_string,
             "doi": self.output_doi,
             "versionIdentifier": self.output_version_identifier,
-            "date": self.output_date_string,
+            "published": self.output_date_string,
         }
         result = parse.preprint_event_output(
             output_json, self.step_json, found_first_preprint
