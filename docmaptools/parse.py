@@ -142,9 +142,6 @@ def preprint_event_output(output_json, step_json, found_first_preprint):
         event_details["type"] = "reviewed-preprint"
     else:
         event_details["type"] = "preprint"
-    # copy over these properties
-    for key in ["doi", "versionIdentifier"]:
-        event_details[key] = output_json.get(key)
     # set the date
     if found_first_preprint:
         event_details["date"] = preprint_happened_date(step_json)
@@ -152,6 +149,9 @@ def preprint_event_output(output_json, step_json, found_first_preprint):
             event_details["date"] = preprint_alternate_date(step_json)
     else:
         event_details["date"] = output_json.get("published")
+    # copy over additional properties
+    for key in [key for key in output_json.keys() if key not in ["type"]]:
+        event_details[key] = output_json.get(key)
     return event_details
 
 
