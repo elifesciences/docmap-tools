@@ -92,7 +92,7 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
     def test_docmap_steps(self):
         "get the steps of the docmap"
         result = parse.docmap_steps(self.d_json)
-        self.assertEqual(len(result), 5)
+        self.assertEqual(len(result), 6)
 
     def test_docmap_first_step(self):
         "get the first step according to the first-step value"
@@ -107,7 +107,7 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
         "get inputs from the first step"
         first_step = parse.docmap_first_step(self.d_json)
         result = parse.step_inputs(first_step)
-        self.assertEqual(len(result), 0)
+        self.assertEqual(len(result), 1)
         # step _:b1
         step_1 = parse.next_step(self.d_json, first_step)
         result = parse.step_inputs(step_1)
@@ -115,16 +115,20 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
         # step _:b2
         step_2 = parse.next_step(self.d_json, step_1)
         result = parse.step_inputs(step_2)
-        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result), 5)
         # step _:b3
         step_3 = parse.next_step(self.d_json, step_2)
         result = parse.step_inputs(step_3)
-        self.assertEqual(len(result), 0)
+        self.assertEqual(len(result), 1)
         # step _:b4
         step_4 = parse.next_step(self.d_json, step_3)
         result = parse.step_inputs(step_4)
+        self.assertEqual(len(result), 1)
+        # step _:b5
+        step_5 = parse.next_step(self.d_json, step_4)
+        result = parse.step_inputs(step_5)
         self.assertEqual(len(result), 5)
-        self.assertEqual(step_4.get("next-step"), None)
+        self.assertEqual(step_5.get("next-step"), None)
 
     def test_docmap_preprint(self):
         "preprint data from the first step inputs"
@@ -135,9 +139,14 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                 "type": "preprint",
                 "doi": "10.1101/2022.11.08.515698",
                 "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.515698v2",
-                "published": "2022-11-22",
                 "versionIdentifier": "2",
-                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/November_2022/23_Nov_22_Batch_1444/b0f4d90b-6c92-1014-9a2e-aae015926ab4.meca",
+                "published": "2022-11-22",
+                "content": [
+                    {
+                        "type": "computer-file",
+                        "url": "s3://transfers-elife/biorxiv_Current_Content/November_2022/23_Nov_22_Batch_1444/b0f4d90b-6c92-1014-9a2e-aae015926ab4.meca",
+                    }
+                ],
             },
         )
 
@@ -149,41 +158,67 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
             {
                 "type": "preprint",
                 "identifier": "85111",
-                "versionIdentifier": "2",
                 "doi": "10.7554/eLife.85111.2",
+                "versionIdentifier": "2",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2023-05-10T14:00:00+00:00",
             },
         )
 
     def test_docmap_preprint_history(self):
         "list of preprint history event data for steps with a published date"
         result = parse.docmap_preprint_history(self.d_json)
+        print(result)
         expected = [
             {
                 "type": "preprint",
                 "date": "2022-11-22",
                 "doi": "10.1101/2022.11.08.515698",
                 "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.515698v2",
-                "published": "2022-11-22",
                 "versionIdentifier": "2",
-                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/November_2022/23_Nov_22_Batch_1444/b0f4d90b-6c92-1014-9a2e-aae015926ab4.meca",
-            }
+                "published": "2022-11-22",
+                "content": [
+                    {
+                        "type": "computer-file",
+                        "url": "s3://transfers-elife/biorxiv_Current_Content/November_2022/23_Nov_22_Batch_1444/b0f4d90b-6c92-1014-9a2e-aae015926ab4.meca",
+                    }
+                ],
+            },
+            {
+                "type": "reviewed-preprint",
+                "date": "2023-01-25T14:00:00+00:00",
+                "identifier": "85111",
+                "doi": "10.7554/eLife.85111.1",
+                "versionIdentifier": "1",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2023-01-25T14:00:00+00:00",
+            },
+            {
+                "type": "reviewed-preprint",
+                "date": "2023-05-10T14:00:00+00:00",
+                "identifier": "85111",
+                "doi": "10.7554/eLife.85111.2",
+                "versionIdentifier": "2",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2023-05-10T14:00:00+00:00",
+            },
         ]
         self.assertEqual(result, expected)
 
     def test_preprint_review_date(self):
         "first preprint under-review date"
         result = parse.preprint_review_date(self.d_json)
-        expected = "2022-11-28T11:30:05+00:00"
+        expected = "2022-11-29T14:20:30+00:00"
         self.assertEqual(result, expected)
 
     def test_step_actions(self):
-        "get actions from the last step"
+        "get actions from the second step"
         step_2 = parse.next_step(
             self.d_json,
             parse.next_step(self.d_json, parse.docmap_first_step(self.d_json)),
         )
         result = parse.step_actions(step_2)
-        self.assertEqual(len(result), 4)
+        self.assertEqual(len(result), 1)
 
     def test_action_outputs(self):
         "outputs from a step action"
@@ -196,9 +231,6 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
         "test parsing docmap JSON into docmap content structure"
         result = parse.docmap_content(self.d_json)
         expected = [
-            OrderedDict(
-                [("type", "preprint"), ("published", None), ("web-content", None)]
-            ),
             OrderedDict(
                 [
                     ("type", "review-article"),
@@ -229,6 +261,16 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                     ),
                 ]
             ),
+            OrderedDict(
+                [
+                    ("type", "reply"),
+                    ("published", "2023-04-20T09:20:28.046788+00:00"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:lxpxhN9cEe2uucduJPd1xg/content",
+                    ),
+                ]
+            ),
         ]
         self.assertEqual(result, expected)
 
@@ -241,7 +283,7 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
     def test_docmap_steps(self):
         "get the steps of the docmap"
         result = parse.docmap_steps(self.d_json)
-        self.assertEqual(len(result), 6)
+        self.assertEqual(len(result), 7)
 
     def test_docmap_first_step(self):
         "get the first step according to the first-step value"
@@ -277,7 +319,11 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
         step_5 = parse.next_step(self.d_json, step_4)
         result = parse.step_inputs(step_5)
         self.assertEqual(len(result), 4)
-        self.assertEqual(step_5.get("next-step"), None)
+        # step _:b6
+        step_6 = parse.next_step(self.d_json, step_5)
+        result = parse.step_inputs(step_6)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(step_6.get("next-step"), None)
 
     def test_docmap_preprint(self):
         "preprint data from the first step inputs"
@@ -290,7 +336,12 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                 "url": "https://www.biorxiv.org/content/10.1101/2023.02.14.528498v2",
                 "versionIdentifier": "2",
                 "published": "2023-02-21",
-                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/February_2023/22_Feb_23_Batch_1531/c27a22b7-6c43-1014-aa80-efc7cf011f1d.meca",
+                "content": [
+                    {
+                        "type": "computer-file",
+                        "url": "s3://transfers-elife/biorxiv_Current_Content/February_2023/22_Feb_23_Batch_1531/c27a22b7-6c43-1014-aa80-efc7cf011f1d.meca",
+                    }
+                ],
             },
         )
 
@@ -305,7 +356,7 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                 "doi": "10.7554/eLife.86628.2",
                 "versionIdentifier": "2",
                 "license": "http://creativecommons.org/licenses/by/4.0/",
-                "published": "TBC",
+                "published": "2023-05-15T14:00:00+00:00",
             },
         )
 
@@ -320,25 +371,30 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                 "url": "https://www.biorxiv.org/content/10.1101/2023.02.14.528498v2",
                 "versionIdentifier": "2",
                 "published": "2023-02-21",
-                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/February_2023/22_Feb_23_Batch_1531/c27a22b7-6c43-1014-aa80-efc7cf011f1d.meca",
+                "content": [
+                    {
+                        "type": "computer-file",
+                        "url": "s3://transfers-elife/biorxiv_Current_Content/February_2023/22_Feb_23_Batch_1531/c27a22b7-6c43-1014-aa80-efc7cf011f1d.meca",
+                    }
+                ],
             },
             {
                 "type": "reviewed-preprint",
-                "date": "TBC",
-                "published": "TBC",
+                "date": "2023-04-11T14:00:00+00:00",
                 "identifier": "86628",
                 "doi": "10.7554/eLife.86628.1",
                 "versionIdentifier": "1",
                 "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2023-04-11T14:00:00+00:00",
             },
             {
                 "type": "reviewed-preprint",
-                "date": "TBC",
-                "published": "TBC",
+                "date": "2023-05-15T14:00:00+00:00",
                 "identifier": "86628",
                 "doi": "10.7554/eLife.86628.2",
                 "versionIdentifier": "2",
                 "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2023-05-15T14:00:00+00:00",
             },
         ]
         self.assertEqual(result, expected)
