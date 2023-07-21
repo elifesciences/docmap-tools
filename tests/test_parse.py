@@ -168,7 +168,6 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
     def test_docmap_preprint_history(self):
         "list of preprint history event data for steps with a published date"
         result = parse.docmap_preprint_history(self.d_json)
-        print(result)
         expected = [
             {
                 "type": "preprint",
