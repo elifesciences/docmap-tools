@@ -59,6 +59,32 @@ class TestConvertHtml(unittest.TestCase):
         content = convert.convert_html_string(string)
         self.assertEqual(content, expected)
 
+    def test_br_tag(self):
+        "example of converting br tag to paragraphs"
+        string = (
+            b"<p>We did:</p>"
+            b"<p><strong>Author response image 1.</strong>  <br />"
+            b'<a href="https://imgur.com/Firke60">'
+            b'<img src="https://i.imgur.com/Firke60.jpg" title="source: imgur.com" />'
+            b"</a>"
+            b"</p>"
+            b"<p>The filtration step ....</p>"
+        )
+        expected = (
+            b'<root xmlns:xlink="http://www.w3.org/1999/xlink">'
+            b"<body>"
+            b"<p>We did:</p>"
+            b"<p><bold>Author response image 1.</bold>  </p>"
+            b'<p><ext-link ext-link-type="uri" xlink:href="https://imgur.com/Firke60">'
+            b'<inline-graphic xlink:href="https://i.imgur.com/Firke60.jpg" />'
+            b"</ext-link></p>"
+            b"<p>The filtration step ....</p>"
+            b"</body>"
+            b"</root>"
+        )
+        content = convert.convert_html_string(string)
+        self.assertEqual(content, expected)
+
 
 class TestBreakTags(unittest.TestCase):
     "tests for convert.break_tags()"
@@ -137,6 +163,34 @@ class TestBreakTags(unittest.TestCase):
         "example where the break tag separates an inline formatting open and close tag"
         xml_string = "<root>" "<p>This <italic>is<break/></italic>ugly.</p>" "</root>"
         expected = b"<root><p>This <italic>is<break /></italic>ugly.</p></root>"
+        root = ElementTree.fromstring(xml_string)
+        convert.break_tags(root)
+        self.assertEqual(ElementTree.tostring(root), expected)
+
+    def test_complex_break_tags(self):
+        "many break tags between fig content based on a real example, plus a blockquote tag"
+        xml_string = (
+            "<root>"
+            "<p>First paragraph.</p>"
+            "<blockquote><p>A quotation.</p></blockquote>"
+            "<p><bold>Author response image 1.</bold>  <break />"
+            "This is the caption for this image that describes what it contains.</p>"
+            '<p><img src="elife-70493-inf1.png" /> </p>'
+            "<p><bold>Author response image 2</bold>  <break />"
+            '<img src="elife-70493-inf2.jpg" /></p>'
+            "</root>"
+        )
+        expected = (
+            b"<root>"
+            b"<p>First paragraph.</p>"
+            b"<blockquote><p>A quotation.</p></blockquote>"
+            b"<p><bold>Author response image 1.</bold>  </p>"
+            b"<p>This is the caption for this image that describes what it contains.</p>"
+            b'<p><img src="elife-70493-inf1.png" /> </p>'
+            b"<p><bold>Author response image 2</bold>  </p>"
+            b'<p><img src="elife-70493-inf2.jpg" /></p>'
+            b"</root>"
+        )
         root = ElementTree.fromstring(xml_string)
         convert.break_tags(root)
         self.assertEqual(ElementTree.tostring(root), expected)
