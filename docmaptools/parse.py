@@ -211,6 +211,7 @@ def output_content(output_json):
     content_item = OrderedDict()
     content_item["type"] = output_json.get("type")
     content_item["published"] = output_json.get("published")
+    content_item["doi"] = output_json.get("doi")
     web_content = [
         content.get("url", {})
         for content in output_json.get("content", [])
