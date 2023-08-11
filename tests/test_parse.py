@@ -234,6 +234,7 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2023-04-14T13:42:24.130023+00:00"),
+                    ("doi", "10.7554/eLife.85111.2.sa1"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:L_wlTNrKEe25pKupBGTeqA/content",
@@ -244,6 +245,7 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2023-04-14T13:42:24.975810+00:00"),
+                    ("doi", "10.7554/eLife.85111.2.sa2"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:MHuA2trKEe2NmT9GM4xGlw/content",
@@ -254,6 +256,7 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                 [
                     ("type", "evaluation-summary"),
                     ("published", "2023-04-14T13:42:25.781585+00:00"),
+                    ("doi", "10.7554/eLife.85111.2.sa3"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:MPYp6NrKEe2anmsrxlBg-w/content",
@@ -264,6 +267,7 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                 [
                     ("type", "reply"),
                     ("published", "2023-04-20T09:20:28.046788+00:00"),
+                    ("doi", "10.7554/eLife.85111.2.sa4"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:lxpxhN9cEe2uucduJPd1xg/content",
@@ -422,6 +426,7 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                 [
                     ("type", "reply"),
                     ("published", "2023-05-11T11:34:27.242112+00:00"),
+                    ("doi", "10.7554/eLife.86628.2.sa1"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:yVioUu_vEe2vQTPxYtnZSw/content",
@@ -432,6 +437,7 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2023-05-11T11:34:28.135284+00:00"),
+                    ("doi", "10.7554/eLife.86628.2.sa2"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:yeEcZO_vEe2Dxo8DxUJqTw/content",
@@ -442,6 +448,7 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                 [
                     ("type", "evaluation-summary"),
                     ("published", "2023-05-11T11:34:28.903631+00:00"),
+                    ("doi", "10.7554/eLife.86628.2.sa3"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:ylaROO_vEe2VSj_o0Xi_gA/content",
@@ -536,6 +543,7 @@ class TestDocmapSteps446694(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2022-02-15T09:43:12.593Z"),
+                    ("doi", None),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:sQ7jVo5DEeyQwX8SmvZEzw/content",
@@ -546,6 +554,7 @@ class TestDocmapSteps446694(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2022-02-15T09:43:13.592Z"),
+                    ("doi", None),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:saaeso5DEeyNd5_qxlJjXQ/content",
@@ -556,6 +565,7 @@ class TestDocmapSteps446694(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2022-02-15T09:43:14.350Z"),
+                    ("doi", None),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:shmDUI5DEey0T6t05fjycg/content",
@@ -566,6 +576,7 @@ class TestDocmapSteps446694(unittest.TestCase):
                 [
                     ("type", "evaluation-summary"),
                     ("published", "2022-02-15T09:43:15.348Z"),
+                    ("doi", None),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:srHqyI5DEeyY91tQ-MUVKA/content",
@@ -576,6 +587,7 @@ class TestDocmapSteps446694(unittest.TestCase):
                 [
                     ("type", "reply"),
                     ("published", "2022-02-15T11:24:05.730Z"),
+                    ("doi", None),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:ySfx9I5REeyOiqtIYslcxA/content",
@@ -601,6 +613,7 @@ class TestDocmapSteps446694(unittest.TestCase):
             [
                 ("type", "reply"),
                 ("published", "2022-02-15T11:24:05.730Z"),
+                ("doi", None),
                 (
                     "web-content",
                     "https://sciety.org/evaluations/hypothesis:ySfx9I5REeyOiqtIYslcxA/content",
@@ -617,6 +630,7 @@ class TestDocmapSteps446694(unittest.TestCase):
             [
                 ("type", None),
                 ("published", None),
+                ("doi", None),
                 ("web-content", None),
             ]
         )
@@ -630,6 +644,7 @@ class TestDocmapSteps446694(unittest.TestCase):
             [
                 ("type", "reply"),
                 ("published", "2022-02-15T11:24:05.730Z"),
+                ("doi", None),
                 ("web-content", None),
             ]
         )
@@ -754,6 +769,7 @@ class TestDocmapSteps512253(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2023-02-09T16:36:07.240248+00:00"),
+                    ("doi", "10.7554/eLife.84364.1.sa1"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:2jRPwqiXEe2WiaPpkX9z0A/content",
@@ -764,6 +780,7 @@ class TestDocmapSteps512253(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2023-02-09T16:36:08.237709+00:00"),
+                    ("doi", "10.7554/eLife.84364.1.sa2"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:2ssR5qiXEe2eBA-GlPB-OA/content",
@@ -774,6 +791,7 @@ class TestDocmapSteps512253(unittest.TestCase):
                 [
                     ("type", "review-article"),
                     ("published", "2023-02-09T16:36:09.046089+00:00"),
+                    ("doi", "10.7554/eLife.84364.1.sa3"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:20aozqiXEe2cFHOdrUiwoQ/content",
@@ -784,6 +802,7 @@ class TestDocmapSteps512253(unittest.TestCase):
                 [
                     ("type", "evaluation-summary"),
                     ("published", "2023-02-09T16:36:09.857359+00:00"),
+                    ("doi", "10.7554/eLife.84364.1.sa4"),
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:28TBAKiXEe2gLa-4_Zmg3Q/content",
