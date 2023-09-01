@@ -85,6 +85,44 @@ class TestConvertHtml(unittest.TestCase):
         content = convert.convert_html_string(string)
         self.assertEqual(content, expected)
 
+    def test_complicated_list(self):
+        "a more complicated li list with ext-link tags to copy over to the new p tag"
+        string = (
+            b"<ul>"
+            b"<li>"
+            b"In plants, ITPK enzymes catalyze the formation of 5-InsP7 from InP6 "
+            b'<a href="https://pubmed.ncbi.nlm.nih.gov/34274522/">'
+            b"https://pubmed.ncbi.nlm.nih.gov/34274522/"
+            b"</a> "
+            b"and VIH enzymes the formation of 1,5-InsP8 from 5-InsP7 "
+            b'<a href="https://pubmed.ncbi.nlm.nih.gov/25901085/">'
+            b"https://pubmed.ncbi.nlm.nih.gov/25901085/"
+            b"</a>."
+            b"</li>"
+            b"</ul>"
+        )
+        expected = (
+            b'<root xmlns:xlink="http://www.w3.org/1999/xlink">'
+            b"<body>"
+            b'<list list-type="bullet">'
+            b"<list-item>"
+            b"<p>In plants, ITPK enzymes catalyze the formation of 5-InsP7 from InP6 "
+            b'<ext-link ext-link-type="uri" xlink:href="https://pubmed.ncbi.nlm.nih.gov/34274522/">'
+            b"https://pubmed.ncbi.nlm.nih.gov/34274522/"
+            b"</ext-link>"
+            b" and VIH enzymes the formation of 1,5-InsP8 from 5-InsP7 "
+            b'<ext-link ext-link-type="uri" xlink:href="https://pubmed.ncbi.nlm.nih.gov/25901085/">'
+            b"https://pubmed.ncbi.nlm.nih.gov/25901085/"
+            b"</ext-link>."
+            b"</p>"
+            b"</list-item>"
+            b"</list>"
+            b"</body>"
+            b"</root>"
+        )
+        content = convert.convert_html_string(string)
+        self.assertEqual(content, expected)
+
 
 class TestBreakTags(unittest.TestCase):
     "tests for convert.break_tags()"

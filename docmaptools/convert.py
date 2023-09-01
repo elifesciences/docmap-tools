@@ -93,7 +93,8 @@ def replace_tags(root):
             for tag_index, child_tag in enumerate(elem.iterfind("*")):
                 # insert into the new tag
                 p_tag.insert(tag_index, child_tag)
-                # remove old tag
+            # remove all old tags from the list-item
+            for child_tag in elem.findall("*"):
                 elem.remove(child_tag)
             # insert the p tag
             elem.insert(0, p_tag)
