@@ -4,7 +4,16 @@
     "id": "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/by-publisher/elife/get-by-manuscript-id?manuscript_id=86628",
     "created": "2023-02-02T07:04:33+00:00",
     "updated": "2023-02-02T07:04:33+00:00",
-    "publisher": "{\"account\":{\"id\":\"https://sciety.org/groups/elife\",\"service\":\"https://sciety.org\"},\"homepage\":\"https://elifesciences.org/\",\"id\":\"https://elifesciences.org/\",\"logo\":\"https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png\",\"name\":\"eLife\"}",
+    "publisher": {
+        "account": {
+            "id": "https://sciety.org/groups/elife",
+            "service": "https://sciety.org"
+        },
+        "homepage": "https://elifesciences.org/",
+        "id": "https://elifesciences.org/",
+        "logo": "https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png",
+        "name": "eLife"
+    },
     "first-step": "_:b0",
     "steps": {
         "_:b0": {
@@ -74,9 +83,9 @@
                         {
                             "type": "review-article",
                             "published": "2023-04-06T11:44:05.502835+00:00",
-                            "doi": "10.7554/eLife.86628.1.sa1",
+                            "doi": "10.7554/eLife.86628.1.sa0",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.86628.1.sa1",
+                            "url": "https://doi.org/10.7554/eLife.86628.1.sa0",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -98,17 +107,32 @@
                     "participants": [
                         {
                             "actor": {
-                                "name": "Gary Yellen",
                                 "type": "person",
-                                "_relatesToOrganization": "Harvard Medical School, United States of America"
+                                "name": "Gary Yellen",
+                                "firstName": "Gary",
+                                "surname": "Yellen",
+                                "_relatesToOrganization": "Harvard Medical School, United States of America",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "Harvard Medical School",
+                                    "location": "Boston, United States of America"
+                                }
                             },
                             "role": "editor"
                         },
                         {
                             "actor": {
-                                "name": "David James",
                                 "type": "person",
-                                "_relatesToOrganization": "University of Sydney, Australia"
+                                "name": "David James",
+                                "firstName": "David",
+                                "_middleName": "E",
+                                "surname": "James",
+                                "_relatesToOrganization": "University of Sydney, Australia",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "University of Sydney",
+                                    "location": "Sydney, Australia"
+                                }
                             },
                             "role": "senior-editor"
                         }
@@ -117,9 +141,9 @@
                         {
                             "type": "evaluation-summary",
                             "published": "2023-04-06T11:44:15.700445+00:00",
-                            "doi": "10.7554/eLife.86628.1.sa2",
+                            "doi": "10.7554/eLife.86628.1.sa1",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.86628.1.sa2",
+                            "url": "https://doi.org/10.7554/eLife.86628.1.sa1",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -170,7 +194,18 @@
                             "doi": "10.7554/eLife.86628.1",
                             "versionIdentifier": "1",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "published": "2023-04-11T14:00:00+00:00"
+                            "published": "2023-04-11T14:00:00+00:00",
+                            "partOf": {
+                                "type": "manuscript",
+                                "doi": "10.7554/eLife.86628",
+                                "identifier": "86628",
+                                "subjectDisciplines": [
+                                    "Biochemistry and Chemical Biology"
+                                ],
+                                "published": "2023-04-11T14:00:00+00:00",
+                                "volumeIdentifier": "12",
+                                "electronicArticleIdentifier": "RP86628"
+                            }
                         }
                     ]
                 }
@@ -194,11 +229,11 @@
                 },
                 {
                     "type": "review-article",
-                    "doi": "10.7554/eLife.86628.1.sa1"
+                    "doi": "10.7554/eLife.86628.1.sa0"
                 },
                 {
                     "type": "evaluation-summary",
-                    "doi": "10.7554/eLife.86628.1.sa2"
+                    "doi": "10.7554/eLife.86628.1.sa1"
                 }
             ],
             "next-step": "_:b3",
@@ -244,7 +279,13 @@
                     "doi": "10.1101/2023.02.14.528498",
                     "url": "https://www.biorxiv.org/content/10.1101/2023.02.14.528498v3",
                     "versionIdentifier": "3",
-                    "published": "2023-04-24"
+                    "published": "2023-04-24",
+                    "content": [
+                        {
+                            "type": "computer-file",
+                            "url": "s3://transfers-elife/biorxiv_Current_Content/April_2023/25_Apr_23_Batch_1592/00b11518-6c7e-1014-a8bd-92bb569a120d.meca"
+                        }
+                    ]
                 }
             ],
             "next-step": "_:b4",
@@ -258,9 +299,9 @@
                         {
                             "type": "reply",
                             "published": "2023-05-11T11:34:27.242112+00:00",
-                            "doi": "10.7554/eLife.86628.2.sa1",
+                            "doi": "10.7554/eLife.86628.2.sa0",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.86628.2.sa1",
+                            "url": "https://doi.org/10.7554/eLife.86628.2.sa0",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -292,9 +333,9 @@
                         {
                             "type": "review-article",
                             "published": "2023-05-11T11:34:28.135284+00:00",
-                            "doi": "10.7554/eLife.86628.2.sa2",
+                            "doi": "10.7554/eLife.86628.2.sa1",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.86628.2.sa2",
+                            "url": "https://doi.org/10.7554/eLife.86628.2.sa1",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -316,17 +357,32 @@
                     "participants": [
                         {
                             "actor": {
-                                "name": "Gary Yellen",
                                 "type": "person",
-                                "_relatesToOrganization": "Harvard Medical School, United States of America"
+                                "name": "Gary Yellen",
+                                "firstName": "Gary",
+                                "surname": "Yellen",
+                                "_relatesToOrganization": "Harvard Medical School, United States of America",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "Harvard Medical School",
+                                    "location": "Boston, United States of America"
+                                }
                             },
                             "role": "editor"
                         },
                         {
                             "actor": {
-                                "name": "David James",
                                 "type": "person",
-                                "_relatesToOrganization": "University of Sydney, Australia"
+                                "name": "David James",
+                                "firstName": "David",
+                                "_middleName": "E",
+                                "surname": "James",
+                                "_relatesToOrganization": "University of Sydney, Australia",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "University of Sydney",
+                                    "location": "Sydney, Australia"
+                                }
                             },
                             "role": "senior-editor"
                         }
@@ -335,9 +391,9 @@
                         {
                             "type": "evaluation-summary",
                             "published": "2023-05-11T11:34:28.903631+00:00",
-                            "doi": "10.7554/eLife.86628.2.sa3",
+                            "doi": "10.7554/eLife.86628.2.sa2",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.86628.2.sa3",
+                            "url": "https://doi.org/10.7554/eLife.86628.2.sa2",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -388,7 +444,18 @@
                             "doi": "10.7554/eLife.86628.2",
                             "versionIdentifier": "2",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "published": "2023-05-15T14:00:00+00:00"
+                            "published": "2023-05-15T14:00:00+00:00",
+                            "partOf": {
+                                "type": "manuscript",
+                                "doi": "10.7554/eLife.86628",
+                                "identifier": "86628",
+                                "subjectDisciplines": [
+                                    "Biochemistry and Chemical Biology"
+                                ],
+                                "published": "2023-04-11T14:00:00+00:00",
+                                "volumeIdentifier": "12",
+                                "electronicArticleIdentifier": "RP86628"
+                            }
                         }
                     ]
                 }
@@ -412,15 +479,15 @@
                 },
                 {
                     "type": "reply",
-                    "doi": "10.7554/eLife.86628.2.sa1"
+                    "doi": "10.7554/eLife.86628.2.sa0"
                 },
                 {
                     "type": "review-article",
-                    "doi": "10.7554/eLife.86628.2.sa2"
+                    "doi": "10.7554/eLife.86628.2.sa1"
                 },
                 {
                     "type": "evaluation-summary",
-                    "doi": "10.7554/eLife.86628.2.sa3"
+                    "doi": "10.7554/eLife.86628.2.sa2"
                 }
             ],
             "next-step": "_:b6",
@@ -434,6 +501,7 @@
                         {
                             "type": "version-of-record",
                             "doi": "10.7554/eLife.86628.3",
+                            "published": "2023-06-02",
                             "url": "https://doi.org/10.7554/eLife.86628.3",
                             "content": [
                                 {

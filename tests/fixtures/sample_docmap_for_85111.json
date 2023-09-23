@@ -4,7 +4,16 @@
     "id": "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/by-publisher/elife/get-by-manuscript-id?manuscript_id=85111",
     "created": "2022-11-28T11:30:05+00:00",
     "updated": "2022-11-28T11:30:05+00:00",
-    "publisher": "{\"account\":{\"id\":\"https://sciety.org/groups/elife\",\"service\":\"https://sciety.org\"},\"homepage\":\"https://elifesciences.org/\",\"id\":\"https://elifesciences.org/\",\"logo\":\"https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png\",\"name\":\"eLife\"}",
+    "publisher": {
+        "account": {
+            "id": "https://sciety.org/groups/elife",
+            "service": "https://sciety.org"
+        },
+        "homepage": "https://elifesciences.org/",
+        "id": "https://elifesciences.org/",
+        "logo": "https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png",
+        "name": "eLife"
+    },
     "first-step": "_:b0",
     "steps": {
         "_:b0": {
@@ -66,9 +75,9 @@
                         {
                             "type": "reply",
                             "published": "2023-01-23T14:34:42.571948+00:00",
-                            "doi": "10.7554/eLife.85111.1.sa1",
+                            "doi": "10.7554/eLife.85111.1.sa0",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.1.sa1",
+                            "url": "https://doi.org/10.7554/eLife.85111.1.sa0",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -100,9 +109,9 @@
                         {
                             "type": "review-article",
                             "published": "2023-01-23T14:34:43.676466+00:00",
-                            "doi": "10.7554/eLife.85111.1.sa2",
+                            "doi": "10.7554/eLife.85111.1.sa1",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.1.sa2",
+                            "url": "https://doi.org/10.7554/eLife.85111.1.sa1",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -134,9 +143,9 @@
                         {
                             "type": "review-article",
                             "published": "2023-01-23T14:34:44.369019+00:00",
-                            "doi": "10.7554/eLife.85111.1.sa3",
+                            "doi": "10.7554/eLife.85111.1.sa2",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.1.sa3",
+                            "url": "https://doi.org/10.7554/eLife.85111.1.sa2",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -158,17 +167,32 @@
                     "participants": [
                         {
                             "actor": {
-                                "name": "Brice Bathellier",
                                 "type": "person",
-                                "_relatesToOrganization": "CNRS, France"
+                                "name": "Brice Bathellier",
+                                "firstName": "Brice",
+                                "surname": "Bathellier",
+                                "_relatesToOrganization": "CNRS, France",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "CNRS",
+                                    "location": "Paris, France"
+                                }
                             },
                             "role": "editor"
                         },
                         {
                             "actor": {
-                                "name": "Kate Wassum",
                                 "type": "person",
-                                "_relatesToOrganization": "University of California, Los Angeles, United States of America"
+                                "name": "Kate Wassum",
+                                "firstName": "Kate",
+                                "_middleName": "M",
+                                "surname": "Wassum",
+                                "_relatesToOrganization": "University of California, Los Angeles, United States of America",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "University of California, Los Angeles",
+                                    "location": "Los Angeles, United States of America"
+                                }
                             },
                             "role": "senior-editor"
                         }
@@ -177,9 +201,9 @@
                         {
                             "type": "evaluation-summary",
                             "published": "2023-01-23T14:34:45.299882+00:00",
-                            "doi": "10.7554/eLife.85111.1.sa4",
+                            "doi": "10.7554/eLife.85111.1.sa3",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.1.sa4",
+                            "url": "https://doi.org/10.7554/eLife.85111.1.sa3",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -230,7 +254,18 @@
                             "doi": "10.7554/eLife.85111.1",
                             "versionIdentifier": "1",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "published": "2023-01-25T14:00:00+00:00"
+                            "published": "2023-01-25T14:00:00+00:00",
+                            "partOf": {
+                                "type": "manuscript",
+                                "doi": "10.7554/eLife.85111",
+                                "identifier": "85111",
+                                "subjectDisciplines": [
+                                    "Neuroscience"
+                                ],
+                                "published": "2023-01-25T14:00:00+00:00",
+                                "volumeIdentifier": "12",
+                                "electronicArticleIdentifier": "RP85111"
+                            }
                         }
                     ]
                 }
@@ -254,6 +289,10 @@
                 },
                 {
                     "type": "reply",
+                    "doi": "10.7554/eLife.85111.1.sa0"
+                },
+                {
+                    "type": "review-article",
                     "doi": "10.7554/eLife.85111.1.sa1"
                 },
                 {
@@ -261,12 +300,8 @@
                     "doi": "10.7554/eLife.85111.1.sa2"
                 },
                 {
-                    "type": "review-article",
-                    "doi": "10.7554/eLife.85111.1.sa3"
-                },
-                {
                     "type": "evaluation-summary",
-                    "doi": "10.7554/eLife.85111.1.sa4"
+                    "doi": "10.7554/eLife.85111.1.sa3"
                 }
             ],
             "next-step": "_:b3",
@@ -340,9 +375,9 @@
                         {
                             "type": "review-article",
                             "published": "2023-04-14T13:42:24.130023+00:00",
-                            "doi": "10.7554/eLife.85111.2.sa1",
+                            "doi": "10.7554/eLife.85111.2.sa0",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.2.sa1",
+                            "url": "https://doi.org/10.7554/eLife.85111.2.sa0",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -374,9 +409,9 @@
                         {
                             "type": "review-article",
                             "published": "2023-04-14T13:42:24.975810+00:00",
-                            "doi": "10.7554/eLife.85111.2.sa2",
+                            "doi": "10.7554/eLife.85111.2.sa1",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.2.sa2",
+                            "url": "https://doi.org/10.7554/eLife.85111.2.sa1",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -398,17 +433,32 @@
                     "participants": [
                         {
                             "actor": {
-                                "name": "Brice Bathellier",
                                 "type": "person",
-                                "_relatesToOrganization": "CNRS, France"
+                                "name": "Brice Bathellier",
+                                "firstName": "Brice",
+                                "surname": "Bathellier",
+                                "_relatesToOrganization": "CNRS, France",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "CNRS",
+                                    "location": "Paris, France"
+                                }
                             },
                             "role": "editor"
                         },
                         {
                             "actor": {
-                                "name": "Kate Wassum",
                                 "type": "person",
-                                "_relatesToOrganization": "University of California, Los Angeles, United States of America"
+                                "name": "Kate Wassum",
+                                "firstName": "Kate",
+                                "_middleName": "M",
+                                "surname": "Wassum",
+                                "_relatesToOrganization": "University of California, Los Angeles, United States of America",
+                                "affiliation": {
+                                    "type": "organization",
+                                    "name": "University of California, Los Angeles",
+                                    "location": "Los Angeles, United States of America"
+                                }
                             },
                             "role": "senior-editor"
                         }
@@ -417,9 +467,9 @@
                         {
                             "type": "evaluation-summary",
                             "published": "2023-04-14T13:42:25.781585+00:00",
-                            "doi": "10.7554/eLife.85111.2.sa3",
+                            "doi": "10.7554/eLife.85111.2.sa2",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.2.sa3",
+                            "url": "https://doi.org/10.7554/eLife.85111.2.sa2",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -443,9 +493,9 @@
                         {
                             "type": "reply",
                             "published": "2023-04-20T09:20:28.046788+00:00",
-                            "doi": "10.7554/eLife.85111.2.sa4",
+                            "doi": "10.7554/eLife.85111.2.sa3",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "url": "https://doi.org/10.7554/eLife.85111.2.sa4",
+                            "url": "https://doi.org/10.7554/eLife.85111.2.sa3",
                             "content": [
                                 {
                                     "type": "web-page",
@@ -496,7 +546,18 @@
                             "doi": "10.7554/eLife.85111.2",
                             "versionIdentifier": "2",
                             "license": "http://creativecommons.org/licenses/by/4.0/",
-                            "published": "2023-05-10T14:00:00+00:00"
+                            "published": "2023-05-10T14:00:00+00:00",
+                            "partOf": {
+                                "type": "manuscript",
+                                "doi": "10.7554/eLife.85111",
+                                "identifier": "85111",
+                                "subjectDisciplines": [
+                                    "Neuroscience"
+                                ],
+                                "published": "2023-01-25T14:00:00+00:00",
+                                "volumeIdentifier": "12",
+                                "electronicArticleIdentifier": "RP85111"
+                            }
                         }
                     ]
                 }
@@ -520,19 +581,19 @@
                 },
                 {
                     "type": "review-article",
-                    "doi": "10.7554/eLife.85111.2.sa1"
+                    "doi": "10.7554/eLife.85111.2.sa0"
                 },
                 {
                     "type": "review-article",
-                    "doi": "10.7554/eLife.85111.2.sa2"
+                    "doi": "10.7554/eLife.85111.2.sa1"
                 },
                 {
                     "type": "evaluation-summary",
-                    "doi": "10.7554/eLife.85111.2.sa3"
+                    "doi": "10.7554/eLife.85111.2.sa2"
                 },
                 {
                     "type": "reply",
-                    "doi": "10.7554/eLife.85111.2.sa4"
+                    "doi": "10.7554/eLife.85111.2.sa3"
                 }
             ],
             "previous-step": "_:b4"
