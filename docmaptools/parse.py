@@ -255,7 +255,10 @@ def docmap_content(d_json):
     actions = step_actions(step)
     # loop through the outputs
     for action in actions:
-        content.append(action_content(action))
+        content_json = action_content(action)
+        if action.get("participants"):
+            content_json["participants"] = action.get("participants")
+        content.append(content_json)
     return content
 
 
