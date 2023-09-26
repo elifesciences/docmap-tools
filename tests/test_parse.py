@@ -266,6 +266,15 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:L_wlTNrKEe25pKupBGTeqA/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -277,6 +286,15 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:MHuA2trKEe2NmT9GM4xGlw/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -287,6 +305,42 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:MPYp6NrKEe2anmsrxlBg-w/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {
+                                    "type": "person",
+                                    "name": "Brice Bathellier",
+                                    "firstName": "Brice",
+                                    "surname": "Bathellier",
+                                    "_relatesToOrganization": "CNRS, France",
+                                    "affiliation": {
+                                        "type": "organization",
+                                        "name": "CNRS",
+                                        "location": "Paris, France",
+                                    },
+                                },
+                                "role": "editor",
+                            },
+                            {
+                                "actor": {
+                                    "type": "person",
+                                    "name": "Kate Wassum",
+                                    "firstName": "Kate",
+                                    "_middleName": "M",
+                                    "surname": "Wassum",
+                                    "_relatesToOrganization": "University of California, Los Angeles, United States of America",
+                                    "affiliation": {
+                                        "type": "organization",
+                                        "name": "University of California, Los Angeles",
+                                        "location": "Los Angeles, United States of America",
+                                    },
+                                },
+                                "role": "senior-editor",
+                            },
+                        ],
                     ),
                 ]
             ),
@@ -496,6 +550,15 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:yeEcZO_vEe2Dxo8DxUJqTw/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -506,6 +569,42 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:ylaROO_vEe2VSj_o0Xi_gA/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {
+                                    "type": "person",
+                                    "name": "Gary Yellen",
+                                    "firstName": "Gary",
+                                    "surname": "Yellen",
+                                    "_relatesToOrganization": "Harvard Medical School, United States of America",
+                                    "affiliation": {
+                                        "type": "organization",
+                                        "name": "Harvard Medical School",
+                                        "location": "Boston, United States of America",
+                                    },
+                                },
+                                "role": "editor",
+                            },
+                            {
+                                "actor": {
+                                    "type": "person",
+                                    "name": "David James",
+                                    "firstName": "David",
+                                    "_middleName": "E",
+                                    "surname": "James",
+                                    "_relatesToOrganization": "University of Sydney, Australia",
+                                    "affiliation": {
+                                        "type": "organization",
+                                        "name": "University of Sydney",
+                                        "location": "Sydney, Australia",
+                                    },
+                                },
+                                "role": "senior-editor",
+                            },
+                        ],
                     ),
                 ]
             ),
@@ -602,6 +701,15 @@ class TestDocmapSteps446694(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:sQ7jVo5DEeyQwX8SmvZEzw/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -612,6 +720,15 @@ class TestDocmapSteps446694(unittest.TestCase):
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:saaeso5DEeyNd5_qxlJjXQ/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
                     ),
                 ]
             ),
@@ -624,6 +741,15 @@ class TestDocmapSteps446694(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:shmDUI5DEey0T6t05fjycg/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -635,6 +761,27 @@ class TestDocmapSteps446694(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:srHqyI5DEeyY91tQ-MUVKA/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {
+                                    "name": "Ronald L Calabrese",
+                                    "type": "person",
+                                    "_relatesToOrganization": "Emory University, United States",
+                                },
+                                "role": "senior-editor",
+                            },
+                            {
+                                "actor": {
+                                    "name": "Noah J Cowan",
+                                    "type": "person",
+                                    "_relatesToOrganization": "Johns Hopkins University, United States",
+                                },
+                                "role": "editor",
+                            },
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -645,6 +792,15 @@ class TestDocmapSteps446694(unittest.TestCase):
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:ySfx9I5REeyOiqtIYslcxA/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
                     ),
                 ]
             ),
@@ -828,6 +984,15 @@ class TestDocmapSteps512253(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:2jRPwqiXEe2WiaPpkX9z0A/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -838,6 +1003,15 @@ class TestDocmapSteps512253(unittest.TestCase):
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:2ssR5qiXEe2eBA-GlPB-OA/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
                     ),
                 ]
             ),
@@ -850,6 +1024,15 @@ class TestDocmapSteps512253(unittest.TestCase):
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:20aozqiXEe2cFHOdrUiwoQ/content",
                     ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
                 ]
             ),
             OrderedDict(
@@ -860,6 +1043,27 @@ class TestDocmapSteps512253(unittest.TestCase):
                     (
                         "web-content",
                         "https://sciety.org/evaluations/hypothesis:28TBAKiXEe2gLa-4_Zmg3Q/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {
+                                    "name": "Michael Eisen",
+                                    "type": "person",
+                                    "_relatesToOrganization": "University of California, Berkeley, United States of America",
+                                },
+                                "role": "editor",
+                            },
+                            {
+                                "actor": {
+                                    "name": "Michael Eisen",
+                                    "type": "person",
+                                    "_relatesToOrganization": "University of California, Berkeley, United States of America",
+                                },
+                                "role": "senior-editor",
+                            },
+                        ],
                     ),
                 ]
             ),
