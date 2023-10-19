@@ -229,7 +229,7 @@ def action_content(action_json):
     return output_content(outputs[0])
 
 
-def content_step(d_json):
+def content_step(d_json, doi=None):
     "find the step which includes peer review content data"
     step = docmap_first_step(d_json)
     step_previous = None
@@ -239,6 +239,8 @@ def content_step(d_json):
             outputs = action_outputs(action)
             for output in outputs:
                 if output.get("type") == "review-article":
+                    if doi and output.get("doi") and output.get("doi").startswith(doi):
+                        return step
                     # remember this step
                     step_previous = step
         # search the next step
@@ -246,11 +248,11 @@ def content_step(d_json):
     return step_previous
 
 
-def docmap_content(d_json):
+def docmap_content(d_json, doi=None):
     "abbreviated and simplified data for content outputs"
     content = []
     # the step from which to get the data
-    step = content_step(d_json)
+    step = content_step(d_json, doi)
     # the actions
     actions = step_actions(step)
     # loop through the outputs
