@@ -1216,6 +1216,26 @@ class TestContentStep(unittest.TestCase):
         d_json = {"first-step": "_:b0", "steps": {"_:b0": content_step}}
         self.assertEqual(parse.content_step(d_json), content_step)
 
+    def test_sample(self):
+        "test a more complete docmap with no doi argument"
+        doi = None
+        expected_previous_step = "_:b3"
+        docmap_string = read_fixture("sample_docmap_for_85111.json", mode="r")
+        d_json = json.loads(docmap_string)
+        self.assertEqual(
+            parse.content_step(d_json, doi).get("previous-step"), expected_previous_step
+        )
+
+    def test_sample_doi(self):
+        "test when doi argument is specified"
+        doi = "10.7554/eLife.85111.1"
+        expected_previous_step = "_:b0"
+        docmap_string = read_fixture("sample_docmap_for_85111.json", mode="r")
+        d_json = json.loads(docmap_string)
+        self.assertEqual(
+            parse.content_step(d_json, doi).get("previous-step"), expected_previous_step
+        )
+
 
 class TestPopulateDocmapContent(unittest.TestCase):
     def setUp(self):
