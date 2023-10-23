@@ -173,7 +173,10 @@ def preprint_assertion_happened_date(step_json, status):
 
 def preprint_happened_date(step_json):
     "happened date from a preprint assertion of status manuscript-published"
-    return preprint_assertion_happened_date(step_json, "manuscript-published")
+    happened = preprint_assertion_happened_date(step_json, "manuscript-published")
+    if not happened:
+        happened = preprint_assertion_happened_date(step_json, "revised")
+    return happened
 
 
 def preprint_review_happened_date(step_json):
@@ -188,10 +191,7 @@ def preprint_alternate_date(step_json):
         return None
     for action_json in step_actions(step_json):
         for output_json in action_outputs(action_json):
-            if (
-                output_json.get("published")
-                and output_json.get("type") == "preprint"
-            ):
+            if output_json.get("published") and output_json.get("type") == "preprint":
                 return output_json.get("published")
     return None
 

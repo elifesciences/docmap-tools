@@ -1143,6 +1143,20 @@ class TestPreprintHappenedDate(unittest.TestCase):
         }
         self.assertEqual(parse.preprint_happened_date(step_json), date_string)
 
+    def test_revised_preprint_happened_date(self):
+        "the data may have revised instead of manuscript-published"
+        date_string = "2023-04-27T15:30:00+00:00"
+        step_json = {
+            "assertions": [
+                {
+                    "status": "revised",
+                    "happened": date_string,
+                    "item": {"type": "preprint"},
+                }
+            ]
+        }
+        self.assertEqual(parse.preprint_happened_date(step_json), date_string)
+
     def test_none(self):
         step_json = None
         self.assertEqual(parse.preprint_happened_date(step_json), None)
