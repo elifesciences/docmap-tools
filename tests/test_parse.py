@@ -1129,6 +1129,13 @@ class TestPreprintEventOutput(unittest.TestCase):
         self.assertDictEqual(result, expected)
 
 
+class TestDocmapLatestPreprint(unittest.TestCase):
+    def test_docmap_latest_preprint_empty(self):
+        "test for if d_json is empty"
+        result = parse.docmap_latest_preprint({})
+        self.assertEqual(result, {})
+
+
 class TestPreprintHappenedDate(unittest.TestCase):
     def test_preprint_happened_date(self):
         date_string = "2023-04-27T15:30:00+00:00"
