@@ -63,7 +63,7 @@ def docmap_preprint(d_json):
     return {}
 
 
-def docmap_latest_preprint(d_json):
+def docmap_latest_preprint(d_json, published=True):
     "find the most recent preprint in the docmap"
     step = docmap_first_step(d_json)
     most_recent_output = {}
@@ -79,8 +79,12 @@ def docmap_latest_preprint(d_json):
                 outputs = action_outputs(action)
                 for output in outputs:
                     if output.get("type") == "preprint":
-                        # remember this value
-                        most_recent_output = output
+                        if published and output.get("published"):
+                            # remember this value
+                            most_recent_output = output
+                        else:
+                            # remember this value
+                            most_recent_output = output
             # search the next step
             step = next_step(d_json, step)
     return most_recent_output
