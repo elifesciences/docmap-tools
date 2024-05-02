@@ -82,7 +82,7 @@ def docmap_latest_preprint(d_json, published=True):
                         if published and output.get("published"):
                             # remember this value
                             most_recent_output = output
-                        else:
+                        elif not published:
                             # remember this value
                             most_recent_output = output
             # search the next step
