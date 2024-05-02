@@ -928,16 +928,9 @@ class TestDocmapSteps512253(unittest.TestCase):
 
     def test_docmap_latest_preprint(self):
         "preprint data from the most recent step inputs"
+        # this older docmap format is missing a published date and returns a blank dict
         result = parse.docmap_latest_preprint(self.d_json)
-        self.assertDictEqual(
-            result,
-            {
-                "identifier": "84364",
-                "versionIdentifier": "1",
-                "type": "preprint",
-                "doi": "10.7554/eLife.84364.1",
-            },
-        )
+        self.assertDictEqual(result, {})
 
     def test_docmap_preprint_history(self):
         "list of preprint history event data"
@@ -1132,13 +1125,7 @@ class TestPreprintEventOutput(unittest.TestCase):
 class TestDocmapLatestPreprint(unittest.TestCase):
     "tests for parse.docmap_latest_preprint()"
 
-    def test_docmap_latest_preprint_empty(self):
-        "test for if d_json is empty"
-        result = parse.docmap_latest_preprint({})
-        self.assertEqual(result, {})
-
-    def test_not_published_argument(self):
-        "test returning output which is not published"
+    def setUp(self):
         first_step = {"next-step": "_:b1"}
         published_step = {
             "actions": [
@@ -1160,7 +1147,7 @@ class TestDocmapLatestPreprint(unittest.TestCase):
                 {"outputs": [{"type": "preprint", "doi": "10.7554/eLife.95621.2"}]}
             ]
         }
-        d_json = {
+        self.d_json = {
             "first-step": "_:b0",
             "steps": {
                 "_:b0": first_step,
@@ -1168,9 +1155,32 @@ class TestDocmapLatestPreprint(unittest.TestCase):
                 "_:b2": unpublished_step,
             },
         }
-        result = parse.docmap_latest_preprint(d_json, published=False)
+
+    def test_docmap_latest_preprint_empty(self):
+        "test for if d_json is empty"
+        result = parse.docmap_latest_preprint({})
+        self.assertEqual(result, {})
+
+    def test_published_argument(self):
+        "test returning the published DOI only"
+        result = parse.docmap_latest_preprint(self.d_json, published=True)
+        # assert the published output data is returned
+        self.assertDictEqual(
+            result,
+            {
+                "type": "preprint",
+                "doi": "10.7554/eLife.95621.1",
+                "published": "2024-03-27T14:00:00+00:00",
+            },
+        )
+
+    def test_not_published_argument(self):
+        "test returning output which is not published"
+        result = parse.docmap_latest_preprint(self.d_json, published=False)
         # assert the unpublished outputs data is returned
-        self.assertEqual(result, {"doi": "10.7554/eLife.95621.2", "type": "preprint"})
+        self.assertDictEqual(
+            result, {"doi": "10.7554/eLife.95621.2", "type": "preprint"}
+        )
 
 
 class TestPreprintHappenedDate(unittest.TestCase):
