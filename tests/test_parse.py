@@ -612,6 +612,299 @@ class TestDocmapSteps86628Sample(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
+class TestDocmapSteps87356Sample(unittest.TestCase):
+    def setUp(self):
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        self.d_json = json.loads(docmap_string)
+
+    def test_docmap_steps(self):
+        "get the steps of the docmap"
+        result = parse.docmap_steps(self.d_json)
+        self.assertEqual(len(result), 9)
+
+    def test_docmap_first_step(self):
+        "get the first step according to the first-step value"
+        result = parse.docmap_first_step(self.d_json)
+
+        self.assertEqual(len(result), 4)
+        self.assertEqual(
+            sorted(result.keys()), ["actions", "assertions", "inputs", "next-step"]
+        )
+
+    def test_step_inputs(self):
+        "get inputs from the first step"
+        first_step = parse.docmap_first_step(self.d_json)
+        result = parse.step_inputs(first_step)
+        self.assertEqual(len(result), 1)
+        # step _:b1
+        step_1 = parse.next_step(self.d_json, first_step)
+        result = parse.step_inputs(step_1)
+        self.assertEqual(len(result), 1)
+        # step _:b2
+        step_2 = parse.next_step(self.d_json, step_1)
+        result = parse.step_inputs(step_2)
+        self.assertEqual(len(result), 4)
+        # step _:b3
+        step_3 = parse.next_step(self.d_json, step_2)
+        result = parse.step_inputs(step_3)
+        self.assertEqual(len(result), 1)
+        # step _:b4
+        step_4 = parse.next_step(self.d_json, step_3)
+        result = parse.step_inputs(step_4)
+        self.assertEqual(len(result), 1)
+        # step _:b5
+        step_5 = parse.next_step(self.d_json, step_4)
+        result = parse.step_inputs(step_5)
+        self.assertEqual(len(result), 5)
+        # step _:b6
+        step_6 = parse.next_step(self.d_json, step_5)
+        result = parse.step_inputs(step_6)
+        self.assertEqual(len(result), 1)
+        # step _:b7
+        step_7 = parse.next_step(self.d_json, step_6)
+        result = parse.step_inputs(step_7)
+        self.assertEqual(len(result), 1)
+        # step _:b8
+        step_8 = parse.next_step(self.d_json, step_7)
+        result = parse.step_inputs(step_8)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(step_8.get("next-step"), None)
+
+    def test_docmap_preprint(self):
+        "preprint data from the first step inputs"
+        result = parse.docmap_preprint(self.d_json)
+        self.assertDictEqual(
+            result,
+            {
+                "type": "preprint",
+                "doi": "10.1101/2023.03.24.534142",
+                "url": "https://www.biorxiv.org/content/10.1101/2023.03.24.534142v1",
+                "versionIdentifier": "1",
+                "published": "2023-03-27",
+                "content": [
+                    {
+                        "type": "computer-file",
+                        "url": "s3://transfers-elife/biorxiv_Current_Content/March_2023/28_Mar_23_Batch_1564/7f0e6d6d-6c0d-1014-992e-dc39f7990bd1.meca",
+                    }
+                ],
+            },
+        )
+
+    def test_docmap_latest_preprint(self):
+        "preprint data from the most recent step inputs"
+        result = parse.docmap_latest_preprint(self.d_json)
+        self.assertDictEqual(
+            result,
+            {
+                "type": "preprint",
+                "identifier": "87356",
+                "doi": "10.7554/eLife.87356.2",
+                "versionIdentifier": "2",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2024-01-11T14:00:00+00:00",
+                "partOf": {
+                    "type": "manuscript",
+                    "doi": "10.7554/eLife.87356",
+                    "identifier": "87356",
+                    "subjectDisciplines": [
+                        "Neuroscience",
+                        "Computational and Systems Biology",
+                    ],
+                    "published": "2023-06-26T14:00:00+00:00",
+                    "volumeIdentifier": "12",
+                    "electronicArticleIdentifier": "RP87356",
+                    "complement": [],
+                },
+            },
+        )
+
+    def test_docmap_preprint_history(self):
+        "list of preprint history event data"
+        result = parse.docmap_preprint_history(self.d_json)
+        expected = [
+            {
+                "type": "preprint",
+                "date": "2023-03-27",
+                "doi": "10.1101/2023.03.24.534142",
+                "url": "https://www.biorxiv.org/content/10.1101/2023.03.24.534142v1",
+                "versionIdentifier": "1",
+                "published": "2023-03-27",
+                "content": [
+                    {
+                        "type": "computer-file",
+                        "url": "s3://transfers-elife/biorxiv_Current_Content/March_2023/28_Mar_23_Batch_1564/7f0e6d6d-6c0d-1014-992e-dc39f7990bd1.meca",
+                    }
+                ],
+            },
+            {
+                "type": "reviewed-preprint",
+                "date": "2023-06-26T14:00:00+00:00",
+                "identifier": "87356",
+                "doi": "10.7554/eLife.87356.1",
+                "versionIdentifier": "1",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2023-06-26T14:00:00+00:00",
+                "partOf": {
+                    "type": "manuscript",
+                    "doi": "10.7554/eLife.87356",
+                    "identifier": "87356",
+                    "subjectDisciplines": [
+                        "Neuroscience",
+                        "Computational and Systems Biology",
+                    ],
+                    "published": "2023-06-26T14:00:00+00:00",
+                    "volumeIdentifier": "12",
+                    "electronicArticleIdentifier": "RP87356",
+                    "complement": [],
+                },
+            },
+            {
+                "type": "reviewed-preprint",
+                "date": "2024-01-11T14:00:00+00:00",
+                "identifier": "87356",
+                "doi": "10.7554/eLife.87356.2",
+                "versionIdentifier": "2",
+                "license": "http://creativecommons.org/licenses/by/4.0/",
+                "published": "2024-01-11T14:00:00+00:00",
+                "partOf": {
+                    "type": "manuscript",
+                    "doi": "10.7554/eLife.87356",
+                    "identifier": "87356",
+                    "subjectDisciplines": [
+                        "Neuroscience",
+                        "Computational and Systems Biology",
+                    ],
+                    "published": "2023-06-26T14:00:00+00:00",
+                    "volumeIdentifier": "12",
+                    "electronicArticleIdentifier": "RP87356",
+                    "complement": [],
+                },
+            },
+        ]
+        self.assertEqual(result, expected)
+
+    def test_step_actions(self):
+        "get actions from the second step"
+        step_2 = parse.next_step(
+            self.d_json,
+            parse.next_step(self.d_json, parse.docmap_first_step(self.d_json)),
+        )
+        result = parse.step_actions(step_2)
+        self.assertEqual(len(result), 1)
+
+    def test_action_outputs(self):
+        "outputs from a step action"
+        first_step = parse.docmap_first_step(self.d_json)
+        first_action = parse.step_actions(first_step)[0]
+        result = parse.action_outputs(first_action)
+        self.assertEqual(len(result), 1)
+
+    def test_docmap_content(self):
+        "test parsing docmap JSON into docmap content structure"
+        result = parse.docmap_content(self.d_json)
+        expected = [
+            OrderedDict(
+                [
+                    ("type", "review-article"),
+                    ("published", "2024-01-05T09:19:58.560691+00:00"),
+                    ("doi", "10.7554/eLife.87356.2.sa0"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:mMQFVqurEe65Hb8uZAUn5g/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "review-article"),
+                    ("published", "2024-01-05T09:19:59.341161+00:00"),
+                    ("doi", "10.7554/eLife.87356.2.sa1"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:mTtSMqurEe6iznNoOhFN0A/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {"name": "anonymous", "type": "person"},
+                                "role": "peer-reviewer",
+                            }
+                        ],
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "evaluation-summary"),
+                    ("published", "2024-01-05T09:20:00.131263+00:00"),
+                    ("doi", "10.7554/eLife.87356.2.sa2"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:mbLBWqurEe6nJ4elisCokQ/content",
+                    ),
+                    (
+                        "participants",
+                        [
+                            {
+                                "actor": {
+                                    "type": "person",
+                                    "name": "Katalin Toth",
+                                    "firstName": "Katalin",
+                                    "surname": "Toth",
+                                    "_relatesToOrganization": "University of Ottawa, Canada",
+                                    "affiliation": {
+                                        "type": "organization",
+                                        "name": "University of Ottawa",
+                                        "location": "Ottawa, Canada",
+                                    },
+                                },
+                                "role": "editor",
+                            },
+                            {
+                                "actor": {
+                                    "type": "person",
+                                    "name": "Laura Colgin",
+                                    "firstName": "Laura",
+                                    "_middleName": "L",
+                                    "surname": "Colgin",
+                                    "_relatesToOrganization": "University of Texas at Austin, United States of America",
+                                    "affiliation": {
+                                        "type": "organization",
+                                        "name": "University of Texas at Austin",
+                                        "location": "Austin, United States of America",
+                                    },
+                                },
+                                "role": "senior-editor",
+                            },
+                        ],
+                    ),
+                ]
+            ),
+            OrderedDict(
+                [
+                    ("type", "reply"),
+                    ("published", "2024-01-05T16:41:24.495885+00:00"),
+                    ("doi", "10.7554/eLife.87356.2.sa3"),
+                    (
+                        "web-content",
+                        "https://sciety.org/evaluations/hypothesis:Q8aLqKvpEe6f1wOJpB7eFQ/content",
+                    ),
+                ]
+            ),
+        ]
+        self.assertEqual(result, expected)
+
+
 class TestDocmapPreprint(unittest.TestCase):
     def test_docmap_preprint(self):
         "test case for when there is empty input"
@@ -1432,3 +1725,33 @@ class TestTransformDocmapContent(unittest.TestCase):
             "ERROR docmaptools:parse:transform_docmap_content: Unhandled exception\n",
         )
         self.assertEqual(log_file_lines[1], "Traceback (most recent call last):\n")
+
+
+class TestPreprintVersionDoiStepMap(unittest.TestCase):
+    "tests for preprint_version_doi_step_map()"
+
+    def test_step_map(self):
+        "test getting a map of version DOI to preprint steps from a full docmap"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = read_fixture("preprint_step_map_for_87356.py")
+        result = parse.preprint_version_doi_step_map(d_json)
+        self.assertEqual(result.keys(), expected.keys())
+        for doi in ["10.7554/eLife.87356.1", "10.7554/eLife.87356.2"]:
+            self.assertEqual(
+                len(result.get(doi)),
+                len(expected.get(doi)),
+                "%s != %s for doi key %s"
+                % (len(result.get(doi)), len(expected.get(doi)), doi),
+            )
+
+        self.assertEqual(
+            result.get("10.7554/eLife.87356.3"), expected.get("10.7554/eLife.87356.3")
+        )
+
+    def test_none(self):
+        "test getting a map of version DOI to preprint steps from a full docmap"
+        d_json = None
+        expected = OrderedDict()
+        result = parse.preprint_version_doi_step_map(d_json)
+        self.assertEqual(result, expected)
