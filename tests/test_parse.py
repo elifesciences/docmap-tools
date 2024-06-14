@@ -1725,3 +1725,33 @@ class TestTransformDocmapContent(unittest.TestCase):
             "ERROR docmaptools:parse:transform_docmap_content: Unhandled exception\n",
         )
         self.assertEqual(log_file_lines[1], "Traceback (most recent call last):\n")
+
+
+class TestPreprintVersionDoiStepMap(unittest.TestCase):
+    "tests for preprint_version_doi_step_map()"
+
+    def test_step_map(self):
+        "test getting a map of version DOI to preprint steps from a full docmap"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = read_fixture("preprint_step_map_for_87356.py")
+        result = parse.preprint_version_doi_step_map(d_json)
+        self.assertEqual(result.keys(), expected.keys())
+        for doi in ["10.7554/eLife.87356.1", "10.7554/eLife.87356.2"]:
+            self.assertEqual(
+                len(result.get(doi)),
+                len(expected.get(doi)),
+                "%s != %s for doi key %s"
+                % (len(result.get(doi)), len(expected.get(doi)), doi),
+            )
+
+        self.assertEqual(
+            result.get("10.7554/eLife.87356.3"), expected.get("10.7554/eLife.87356.3")
+        )
+
+    def test_none(self):
+        "test getting a map of version DOI to preprint steps from a full docmap"
+        d_json = None
+        expected = OrderedDict()
+        result = parse.preprint_version_doi_step_map(d_json)
+        self.assertEqual(result, expected)

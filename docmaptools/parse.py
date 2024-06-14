@@ -291,3 +291,40 @@ def transform_docmap_content(content_json):
                 LOGGER.exception("Unhandled exception")
                 raise
     return content_json
+
+
+def preprint_version_doi_step_map(d_json):
+    "preprint steps grouped by version doi"
+    doi_step_map = OrderedDict()
+    steps = docmap_steps(d_json)
+
+    current_doi = None
+    current_output_type = None
+    for step_key in steps:
+        # the actions
+        actions = step_actions(steps.get(step_key))
+        # loop through the outputs
+        for action in actions:
+            # get the output type when a particular type is in the step output
+            output_type = None
+            outputs = action_outputs(action)
+            for output in outputs:
+                if output.get("type") in ["preprint", "version-of-record"]:
+                    output_type = output.get("type")
+                    current_output_type = output_type
+
+            # get the DOI key for the step depending on the type and if the DOI value is new
+            content_json = action_content(action)
+            if (
+                content_json.get("doi")
+                and output_type == "preprint"
+                and content_json.get("doi") not in doi_step_map.keys()
+            ):
+                doi_step_map[content_json.get("doi")] = []
+                current_doi = content_json.get("doi")
+
+        # add steps that are associated only with a preprint step
+        if current_output_type == "preprint":
+            doi_step_map[current_doi].append(steps.get(step_key))
+
+    return doi_step_map
