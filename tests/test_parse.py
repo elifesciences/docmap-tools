@@ -1476,6 +1476,71 @@ class TestDocmapLatestPreprint(unittest.TestCase):
         )
 
 
+class TestDocmapPreprintOutput(unittest.TestCase):
+    "tests for docmap_preprint_output()"
+
+    def test_docmap_preprint_output(self):
+        "test getting latest output regardless of version DOI value"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = {
+            "type": "preprint",
+            "identifier": "87356",
+            "doi": "10.7554/eLife.87356.2",
+            "versionIdentifier": "2",
+            "license": "http://creativecommons.org/licenses/by/4.0/",
+            "published": "2024-01-11T14:00:00+00:00",
+            "partOf": {
+                "type": "manuscript",
+                "doi": "10.7554/eLife.87356",
+                "identifier": "87356",
+                "subjectDisciplines": [
+                    "Neuroscience",
+                    "Computational and Systems Biology",
+                ],
+                "published": "2023-06-26T14:00:00+00:00",
+                "volumeIdentifier": "12",
+                "electronicArticleIdentifier": "RP87356",
+                "complement": [],
+            },
+        }
+        # invoke
+        result = parse.docmap_preprint_output(d_json)
+        # assert
+        self.assertDictEqual(result, expected)
+
+    def test_version_doi(self):
+        "test finding latest output which matches version DOI argument"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.1"
+        expected = {
+            "type": "preprint",
+            "identifier": "87356",
+            "doi": "10.7554/eLife.87356.1",
+            "versionIdentifier": "1",
+            "license": "http://creativecommons.org/licenses/by/4.0/",
+            "published": "2023-06-26T14:00:00+00:00",
+            "partOf": {
+                "type": "manuscript",
+                "doi": "10.7554/eLife.87356",
+                "identifier": "87356",
+                "subjectDisciplines": [
+                    "Neuroscience",
+                    "Computational and Systems Biology",
+                ],
+                "published": "2023-06-26T14:00:00+00:00",
+                "volumeIdentifier": "12",
+                "electronicArticleIdentifier": "RP87356",
+                "complement": [],
+            },
+        }
+        # invoke
+        result = parse.docmap_preprint_output(d_json, version_doi=version_doi)
+        # assert
+        self.assertDictEqual(result, expected)
+
+
 class TestPreprintHappenedDate(unittest.TestCase):
     def test_preprint_happened_date(self):
         date_string = "2023-04-27T15:30:00+00:00"
@@ -1556,6 +1621,34 @@ class TestPreprintAlternateDate(unittest.TestCase):
     def test_none(self):
         step_json = None
         self.assertEqual(parse.preprint_alternate_date(step_json), None)
+
+
+class TestOutputPartof(unittest.TestCase):
+    "tests for output_partof()"
+
+    def test_output_partof(self):
+        "test output_json which has partOf data"
+        part_of_json = {
+            "type": "manuscript",
+        }
+        output_json = {
+            "type": "preprint",
+            "partOf": part_of_json,
+        }
+        result = parse.output_partof(output_json)
+        self.assertDictEqual(result, part_of_json)
+
+    def test_no_part_of(self):
+        "test output_json with no partOf"
+        output_json = {"type": "preprint"}
+        result = parse.output_partof(output_json)
+        self.assertDictEqual(result, {})
+
+    def test_none(self):
+        "test if output_json is None"
+        output_json = None
+        result = parse.output_partof(output_json)
+        self.assertDictEqual(result, {})
 
 
 class TestContentStep(unittest.TestCase):
@@ -1755,3 +1848,186 @@ class TestPreprintVersionDoiStepMap(unittest.TestCase):
         expected = OrderedDict()
         result = parse.preprint_version_doi_step_map(d_json)
         self.assertEqual(result, expected)
+
+
+class TestPreprintLicense(unittest.TestCase):
+    "tests for preprint_license()"
+
+    def test_preprint_license(self):
+        "parse license of a preprint"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = "http://creativecommons.org/licenses/by/4.0/"
+        # invoke
+        result = parse.preprint_license(d_json)
+        # assert
+        self.assertEqual(result, expected)
+
+    def test_by_version_doi(self):
+        "parse license of matched version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.1"
+        expected = "http://creativecommons.org/licenses/by/4.0/"
+        # invoke
+        result = parse.preprint_license(d_json)
+        # assert
+        self.assertEqual(result, expected)
+
+    def test_no_output(self):
+        "test if no output_json is found"
+        d_json = {}
+        expected = None
+        # invoke
+        result = parse.preprint_license(d_json)
+        # assert
+        self.assertEqual(result, expected)
+
+
+class TestPreprintElectronicArticleIdentifier(unittest.TestCase):
+    "tests for preprint_electronic_article_identifier()"
+
+    def setUp(self):
+        self.temp_dir = "tests/tmp"
+        self.log_file = os.path.join(self.temp_dir, "test.log")
+        self.log_handler = configure_logging(self.log_file)
+
+    def tearDown(self):
+        LOGGER.removeHandler(self.log_handler)
+        delete_files_in_folder(self.temp_dir, filter_out=[".keepme"])
+
+    def test_elocation_id_from_docmap(self):
+        "get elocation-id value from the latest preprint"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = "RP87356"
+        result = parse.preprint_electronic_article_identifier(d_json)
+        self.assertEqual(result, expected)
+
+    def test_by_version_doi(self):
+        "get elocation-id by matching the version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.1"
+        expected = "RP87356"
+        result = parse.preprint_electronic_article_identifier(
+            d_json, version_doi=version_doi
+        )
+        self.assertEqual(result, expected)
+
+    def test_not_found(self):
+        "test getting elocation-id from a non-preprint version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.3"
+        expected = None
+        result = parse.preprint_electronic_article_identifier(
+            d_json, version_doi=version_doi, identifier=version_doi
+        )
+        self.assertEqual(result, expected)
+        log_file_lines = read_log_file_lines(self.log_file)
+        self.assertEqual(
+            log_file_lines[0],
+            (
+                "WARNING docmaptools:parse:preprint_partof_field: "
+                "%s no electronicArticleIdentifier found in the docmap\n" % version_doi
+            ),
+        )
+
+
+class TestPreprintVolume(unittest.TestCase):
+    "tests for preprint_volume()"
+
+    def setUp(self):
+        self.temp_dir = "tests/tmp"
+        self.log_file = os.path.join(self.temp_dir, "test.log")
+        self.log_handler = configure_logging(self.log_file)
+
+    def tearDown(self):
+        LOGGER.removeHandler(self.log_handler)
+        delete_files_in_folder(self.temp_dir, filter_out=[".keepme"])
+
+    def test_elocation_id_from_docmap(self):
+        "get volume value from the latest preprint"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = "12"
+        result = parse.preprint_volume(d_json)
+        self.assertEqual(result, expected)
+
+    def test_by_version_doi(self):
+        "get volume by matching the version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.1"
+        expected = "12"
+        result = parse.preprint_volume(d_json, version_doi=version_doi)
+        self.assertEqual(result, expected)
+
+    def test_not_found(self):
+        "test getting volume from a non-preprint version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.3"
+        expected = None
+        result = parse.preprint_volume(
+            d_json, version_doi=version_doi, identifier=version_doi
+        )
+        self.assertEqual(result, expected)
+        log_file_lines = read_log_file_lines(self.log_file)
+        self.assertEqual(
+            log_file_lines[0],
+            (
+                "WARNING docmaptools:parse:preprint_partof_field: "
+                "%s no volumeIdentifier found in the docmap\n" % version_doi
+            ),
+        )
+
+
+class TestPreprintSubjectDisciplines(unittest.TestCase):
+    "tests for preprint_subject_disciplines()"
+
+    def setUp(self):
+        self.temp_dir = "tests/tmp"
+        self.log_file = os.path.join(self.temp_dir, "test.log")
+        self.log_handler = configure_logging(self.log_file)
+
+    def tearDown(self):
+        LOGGER.removeHandler(self.log_handler)
+        delete_files_in_folder(self.temp_dir, filter_out=[".keepme"])
+
+    def test_elocation_id_from_docmap(self):
+        "get volume value from the latest preprint"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = ["Neuroscience", "Computational and Systems Biology"]
+        result = parse.preprint_subject_disciplines(d_json)
+        self.assertEqual(result, expected)
+
+    def test_by_version_doi(self):
+        "get volume by matching the version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.1"
+        expected = ["Neuroscience", "Computational and Systems Biology"]
+        result = parse.preprint_subject_disciplines(d_json, version_doi=version_doi)
+        self.assertEqual(result, expected)
+
+    def test_not_found(self):
+        "test getting volume from a non-preprint version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.3"
+        expected = None
+        result = parse.preprint_subject_disciplines(
+            d_json, version_doi=version_doi, identifier=version_doi
+        )
+        self.assertEqual(result, expected)
+        log_file_lines = read_log_file_lines(self.log_file)
+        self.assertEqual(
+            log_file_lines[0],
+            (
+                "WARNING docmaptools:parse:preprint_partof_field: "
+                "%s no subjectDisciplines found in the docmap\n" % version_doi
+            ),
+        )
