@@ -90,6 +90,21 @@ def docmap_latest_preprint(d_json, published=True):
     return most_recent_output
 
 
+def docmap_preprint_output(d_json, version_doi=None, published=False):
+    "return latest preprint output, optionally matching the version_doi"
+    if not version_doi:
+        return docmap_latest_preprint(d_json, published)
+    else:
+        output = None
+        step_map = preprint_version_doi_step_map(d_json)
+        for step_json in step_map.get(version_doi, []):
+            for action_json in step_actions(step_json):
+                for output_json in action_outputs(action_json):
+                    if output_json.get("type") == "preprint":
+                        output = output_json
+    return output
+
+
 def docmap_preprint_history(d_json):
     "return a list of events in a preprint publication history from the docmap"
     step_json = docmap_first_step(d_json)
@@ -227,6 +242,11 @@ def output_content(output_json):
     return content_item
 
 
+def output_partof(output_json):
+    "return the partOf data from output"
+    return output_json.get("partOf", {}) if output_json else {}
+
+
 def action_content(action_json):
     "extract web-content and metadata from an action"
     outputs = action_outputs(action_json)
@@ -328,3 +348,38 @@ def preprint_version_doi_step_map(d_json):
             doi_step_map[current_doi].append(steps.get(step_key))
 
     return doi_step_map
+
+
+def preprint_license(d_json, version_doi=None, identifier=None):
+    "parse preprint license, optionally matching the version_doi"
+    output_json = docmap_preprint_output(d_json, version_doi)
+    return output_json.get("license")
+
+
+def preprint_partof_field(d_json, field_name, version_doi=None, identifier=None):
+    "return a value from the partOf data"
+    # find the latest output json, optionally matching the version_doi
+    output_json = docmap_preprint_output(d_json, version_doi)
+    # get value from output partOf
+    field_value = output_partof(output_json).get(field_name)
+    if not field_value:
+        LOGGER.warning("%s no %s found in the docmap", identifier, field_name)
+        return None
+    return field_value
+
+
+def preprint_electronic_article_identifier(d_json, version_doi=None, identifier=None):
+    "from the docmap get the elocation-id, optionally matching the version_doi"
+    return preprint_partof_field(
+        d_json, "electronicArticleIdentifier", version_doi, identifier
+    )
+
+
+def preprint_volume(d_json, version_doi=None, identifier=None):
+    "from the docmap get the volume, optionally matching the version_doi"
+    return preprint_partof_field(d_json, "volumeIdentifier", version_doi, identifier)
+
+
+def preprint_subject_disciplines(d_json, version_doi=None, identifier=None):
+    "from the docmap get the article categories, optionally matching the version_doi"
+    return preprint_partof_field(d_json, "subjectDisciplines", version_doi, identifier)
