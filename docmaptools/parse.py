@@ -266,8 +266,9 @@ def content_step(d_json, doi=None):
                 if output.get("type") == "review-article":
                     if doi and output.get("doi") and output.get("doi").startswith(doi):
                         return step
-                    # remember this step
-                    step_previous = step
+                    elif not doi:
+                        # remember this step
+                        step_previous = step
         # search the next step
         step = next_step(d_json, step)
     return step_previous

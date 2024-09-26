@@ -1690,6 +1690,14 @@ class TestContentStep(unittest.TestCase):
             parse.content_step(d_json, doi).get("previous-step"), expected_previous_step
         )
 
+    def test_doi_not_found(self):
+        "test doi argument does not match any version DOI in the docmap"
+        doi = "foo"
+        expected = None
+        docmap_string = read_fixture("sample_docmap_for_85111.json", mode="r")
+        d_json = json.loads(docmap_string)
+        self.assertEqual(parse.content_step(d_json, doi), expected)
+
 
 class TestPopulateDocmapContent(unittest.TestCase):
     def setUp(self):
