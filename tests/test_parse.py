@@ -1858,6 +1858,40 @@ class TestPreprintVersionDoiStepMap(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
+class TestPreprintIdentifier(unittest.TestCase):
+    "tests for preprint_identifier()"
+
+    def test_preprint_identifier(self):
+        "parse identifier of a preprint"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        expected = "87356"
+        # invoke
+        result = parse.preprint_identifier(d_json)
+        # assert
+        self.assertEqual(result, expected)
+
+    def test_by_version_doi(self):
+        "parse identifier of matched version DOI"
+        docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
+        d_json = json.loads(docmap_string)
+        version_doi = "10.7554/eLife.87356.1"
+        expected = "87356"
+        # invoke
+        result = parse.preprint_identifier(d_json)
+        # assert
+        self.assertEqual(result, expected)
+
+    def test_no_output(self):
+        "test if no output_json is found"
+        d_json = {}
+        expected = None
+        # invoke
+        result = parse.preprint_identifier(d_json)
+        # assert
+        self.assertEqual(result, expected)
+
+
 class TestPreprintLicense(unittest.TestCase):
     "tests for preprint_license()"
 

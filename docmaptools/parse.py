@@ -351,6 +351,12 @@ def preprint_version_doi_step_map(d_json):
     return doi_step_map
 
 
+def preprint_identifier(d_json, version_doi=None, identifier=None):
+    "parse preprint identifier, the article_id, optionally matching the version_doi"
+    output_json = docmap_preprint_output(d_json, version_doi)
+    return output_json.get("identifier")
+
+
 def preprint_license(d_json, version_doi=None, identifier=None):
     "parse preprint license, optionally matching the version_doi"
     output_json = docmap_preprint_output(d_json, version_doi)
