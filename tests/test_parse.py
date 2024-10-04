@@ -1541,6 +1541,56 @@ class TestDocmapPreprintOutput(unittest.TestCase):
         self.assertDictEqual(result, expected)
 
 
+class TestDocmapEditorData(unittest.TestCase):
+    "tests for docmap_editor_data()"
+
+    def test_docmap_editor_data(self):
+        "test parsing editor data from a docmap"
+        docmap_string = read_fixture("sample_docmap_for_87356.json")
+        version_doi = "10.7554/eLife.87356.1"
+        expected = [
+            {
+                "actor": {
+                    "type": "person",
+                    "name": "Katalin Toth",
+                    "firstName": "Katalin",
+                    "surname": "Toth",
+                    "_relatesToOrganization": "University of Ottawa, Canada",
+                    "affiliation": {
+                        "type": "organization",
+                        "name": "University of Ottawa",
+                        "location": "Ottawa, Canada",
+                    },
+                },
+                "role": "editor",
+            },
+            {
+                "actor": {
+                    "type": "person",
+                    "name": "Laura Colgin",
+                    "firstName": "Laura",
+                    "_middleName": "L",
+                    "surname": "Colgin",
+                    "_relatesToOrganization": (
+                        "University of Texas at Austin, United States of America"
+                    ),
+                    "affiliation": {
+                        "type": "organization",
+                        "name": "University of Texas at Austin",
+                        "location": "Austin, United States of America",
+                    },
+                },
+                "role": "senior-editor",
+            },
+        ]
+        # invoke
+        data = parse.docmap_editor_data(docmap_string, version_doi)
+        # assert
+        self.assertEqual(len(data), 2)
+        self.assertDictEqual(data[0], expected[0])
+        self.assertDictEqual(data[1], expected[1])
+
+
 class TestPreprintHappenedDate(unittest.TestCase):
     def test_preprint_happened_date(self):
         date_string = "2023-04-27T15:30:00+00:00"
