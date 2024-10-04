@@ -105,6 +105,23 @@ def docmap_preprint_output(d_json, version_doi=None, published=False):
     return output
 
 
+def docmap_editor_data(docmap_string, version_doi):
+    "collect editor data from a docmap"
+    d_json = docmap_json(docmap_string)
+    step_map = preprint_version_doi_step_map(d_json)
+    steps = step_map.get(version_doi)
+    participants = []
+    # find the participants of evaluation-summary output
+    for step in steps:
+        actions = step_actions(step)
+        for action in actions:
+            outputs = action_outputs(action)
+            for output in outputs:
+                if output.get("type") == "evaluation-summary":
+                    participants = action.get("participants")
+    return participants
+
+
 def docmap_preprint_history(d_json):
     "return a list of events in a preprint publication history from the docmap"
     step_json = docmap_first_step(d_json)
