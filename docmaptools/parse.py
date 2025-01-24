@@ -280,7 +280,11 @@ def content_step(d_json, doi=None):
         for action in actions:
             outputs = action_outputs(action)
             for output in outputs:
-                if output.get("type") == "review-article":
+                if output.get("type") in [
+                    "evaluation-summary",
+                    "reply",
+                    "review-article",
+                ]:
                     if doi and output.get("doi") and output.get("doi").startswith(doi):
                         return step
                     elif not doi:
