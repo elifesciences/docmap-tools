@@ -1720,6 +1720,12 @@ class TestContentStep(unittest.TestCase):
         d_json = {"first-step": "_:b0", "steps": {"_:b0": content_step}}
         self.assertEqual(parse.content_step(d_json), content_step)
 
+    def test_reply(self):
+        "test reply type also returns JSON"
+        content_step = {"actions": [{"outputs": [{"type": "reply"}]}]}
+        d_json = {"first-step": "_:b0", "steps": {"_:b0": content_step}}
+        self.assertEqual(parse.content_step(d_json), content_step)
+
     def test_sample(self):
         "test a more complete docmap with no doi argument"
         doi = None
