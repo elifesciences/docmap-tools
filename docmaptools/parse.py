@@ -252,7 +252,7 @@ def output_content(output_json):
     web_content = [
         content.get("url", {})
         for content in output_json.get("content", [])
-        if content.get("url").endswith("/content")
+        if content and content.get("url") and content.get("url").endswith("/content")
     ]
     # use the first web-content for now
     content_item["web-content"] = web_content[0] if len(web_content) >= 1 else None

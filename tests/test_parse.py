@@ -1154,6 +1154,28 @@ class TestDocmapSteps446694(unittest.TestCase):
         result = parse.output_content(output_json)
         self.assertEqual(result, expected)
 
+    def test_no_url(self):
+        "test if content url is missing"
+        output_json = {
+            "type": "reply",
+            "published": "2022-02-15T11:24:05.730Z",
+            "content": [
+                {
+                    "type": "web-content",
+                }
+            ],
+        }
+        expected = OrderedDict(
+            [
+                ("type", "reply"),
+                ("published", "2022-02-15T11:24:05.730Z"),
+                ("doi", None),
+                ("web-content", None),
+            ]
+        )
+        result = parse.output_content(output_json)
+        self.assertEqual(result, expected)
+
 
 class TestDocmapSteps512253(unittest.TestCase):
     def setUp(self):
