@@ -41,8 +41,9 @@ class TestGetWebContent(unittest.TestCase):
         mock_get.return_value = FakeResponse(
             200, content=read_fixture("sample_page.html", mode="rb")
         )
+        user_agent = "user_agent/version (https://example.org)"
         path = "https://example.org"
-        content = parse.get_web_content(path)
+        content = parse.get_web_content(path, user_agent)
         self.assertTrue(isinstance(content, bytes))
         log_file_lines = read_log_file_lines(self.log_file)
         self.assertEqual(
