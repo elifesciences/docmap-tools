@@ -5,9 +5,12 @@ import requests
 from docmaptools import convert, LOGGER
 
 
-def get_web_content(path):
+def get_web_content(path, user_agent=None):
     "HTTP get request for the path and return content"
-    request = requests.get(path)
+    headers = None
+    if user_agent:
+        headers = {"user-agent": user_agent}
+    request = requests.get(path, headers=headers)
     LOGGER.info("GET %s", path)
     if request.status_code == 200:
         return request.content
@@ -311,11 +314,13 @@ def docmap_content(d_json, doi=None):
     return content
 
 
-def populate_docmap_content(content_json):
+def populate_docmap_content(content_json, user_agent=None):
     "get web-content url content and add the HTML to the data structure"
     for content_item in content_json:
         if content_item.get("web-content"):
-            content_item["html"] = get_web_content(content_item.get("web-content"))
+            content_item["html"] = get_web_content(
+                content_item.get("web-content"), user_agent=user_agent
+            )
     return content_json
 
 
