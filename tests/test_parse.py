@@ -70,19 +70,12 @@ class TestGetWebContent(unittest.TestCase):
 
 
 class TestDocmapJson(unittest.TestCase):
-    def test_docmap_json_446694(self):
-        docmap_string = read_fixture("2021.06.02.446694.docmap.json", mode="r")
+    def test_docmap_json_85111(self):
+        docmap_string = read_fixture("sample_docmap_for_85111.json", mode="r")
         result = parse.docmap_json(docmap_string)
         # some simple assertions
         self.assertEqual(result.get("first-step"), "_:b0")
-        self.assertEqual(len(result.get("steps")), 1)
-
-    def test_docmap_json_512253(self):
-        docmap_string = read_fixture("2022.10.17.512253.docmap.json", mode="r")
-        result = parse.docmap_json(docmap_string)
-        # some simple assertions
-        self.assertEqual(result.get("first-step"), "_:b0")
-        self.assertEqual(len(result.get("steps")), 3)
+        self.assertEqual(len(result.get("steps")), 6)
 
 
 class TestDocmapSteps85111Sample(unittest.TestCase):
@@ -360,259 +353,6 @@ class TestDocmapSteps85111Sample(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
-class TestDocmapSteps86628Sample(unittest.TestCase):
-    def setUp(self):
-        docmap_string = read_fixture("sample_docmap_for_86628.json", mode="r")
-        self.d_json = json.loads(docmap_string)
-
-    def test_docmap_steps(self):
-        "get the steps of the docmap"
-        result = parse.docmap_steps(self.d_json)
-        self.assertEqual(len(result), 7)
-
-    def test_docmap_first_step(self):
-        "get the first step according to the first-step value"
-        result = parse.docmap_first_step(self.d_json)
-
-        self.assertEqual(len(result), 4)
-        self.assertEqual(
-            sorted(result.keys()), ["actions", "assertions", "inputs", "next-step"]
-        )
-
-    def test_step_inputs(self):
-        "get inputs from the first step"
-        first_step = parse.docmap_first_step(self.d_json)
-        result = parse.step_inputs(first_step)
-        self.assertEqual(len(result), 1)
-        # step _:b1
-        step_1 = parse.next_step(self.d_json, first_step)
-        result = parse.step_inputs(step_1)
-        self.assertEqual(len(result), 1)
-        # step _:b2
-        step_2 = parse.next_step(self.d_json, step_1)
-        result = parse.step_inputs(step_2)
-        self.assertEqual(len(result), 3)
-        # step _:b3
-        step_3 = parse.next_step(self.d_json, step_2)
-        result = parse.step_inputs(step_3)
-        self.assertEqual(len(result), 1)
-        # step _:b4
-        step_4 = parse.next_step(self.d_json, step_3)
-        result = parse.step_inputs(step_4)
-        self.assertEqual(len(result), 1)
-        # step _:b5
-        step_5 = parse.next_step(self.d_json, step_4)
-        result = parse.step_inputs(step_5)
-        self.assertEqual(len(result), 4)
-        # step _:b6
-        step_6 = parse.next_step(self.d_json, step_5)
-        result = parse.step_inputs(step_6)
-        self.assertEqual(len(result), 1)
-        self.assertEqual(step_6.get("next-step"), None)
-
-    def test_docmap_preprint(self):
-        "preprint data from the first step inputs"
-        result = parse.docmap_preprint(self.d_json)
-        self.assertDictEqual(
-            result,
-            {
-                "type": "preprint",
-                "doi": "10.1101/2023.02.14.528498",
-                "url": "https://www.biorxiv.org/content/10.1101/2023.02.14.528498v2",
-                "versionIdentifier": "2",
-                "published": "2023-02-21",
-                "content": [
-                    {
-                        "type": "computer-file",
-                        "url": "s3://transfers-elife/biorxiv_Current_Content/February_2023/22_Feb_23_Batch_1531/c27a22b7-6c43-1014-aa80-efc7cf011f1d.meca",
-                    }
-                ],
-            },
-        )
-
-    def test_docmap_latest_preprint(self):
-        "preprint data from the most recent step inputs"
-        result = parse.docmap_latest_preprint(self.d_json)
-        self.assertDictEqual(
-            result,
-            {
-                "type": "preprint",
-                "identifier": "86628",
-                "doi": "10.7554/eLife.86628.2",
-                "versionIdentifier": "2",
-                "license": "http://creativecommons.org/licenses/by/4.0/",
-                "published": "2023-05-15T14:00:00+00:00",
-                "partOf": {
-                    "type": "manuscript",
-                    "doi": "10.7554/eLife.86628",
-                    "identifier": "86628",
-                    "subjectDisciplines": ["Biochemistry and Chemical Biology"],
-                    "published": "2023-04-11T14:00:00+00:00",
-                    "volumeIdentifier": "12",
-                    "electronicArticleIdentifier": "RP86628",
-                },
-            },
-        )
-
-    def test_docmap_preprint_history(self):
-        "list of preprint history event data"
-        result = parse.docmap_preprint_history(self.d_json)
-        expected = [
-            {
-                "type": "preprint",
-                "date": "2023-02-21",
-                "doi": "10.1101/2023.02.14.528498",
-                "url": "https://www.biorxiv.org/content/10.1101/2023.02.14.528498v2",
-                "versionIdentifier": "2",
-                "published": "2023-02-21",
-                "content": [
-                    {
-                        "type": "computer-file",
-                        "url": "s3://transfers-elife/biorxiv_Current_Content/February_2023/22_Feb_23_Batch_1531/c27a22b7-6c43-1014-aa80-efc7cf011f1d.meca",
-                    }
-                ],
-            },
-            {
-                "type": "reviewed-preprint",
-                "date": "2023-04-11T14:00:00+00:00",
-                "identifier": "86628",
-                "doi": "10.7554/eLife.86628.1",
-                "versionIdentifier": "1",
-                "license": "http://creativecommons.org/licenses/by/4.0/",
-                "published": "2023-04-11T14:00:00+00:00",
-                "partOf": {
-                    "type": "manuscript",
-                    "doi": "10.7554/eLife.86628",
-                    "identifier": "86628",
-                    "subjectDisciplines": ["Biochemistry and Chemical Biology"],
-                    "published": "2023-04-11T14:00:00+00:00",
-                    "volumeIdentifier": "12",
-                    "electronicArticleIdentifier": "RP86628",
-                },
-            },
-            {
-                "type": "reviewed-preprint",
-                "date": "2023-05-15T14:00:00+00:00",
-                "identifier": "86628",
-                "doi": "10.7554/eLife.86628.2",
-                "versionIdentifier": "2",
-                "license": "http://creativecommons.org/licenses/by/4.0/",
-                "published": "2023-05-15T14:00:00+00:00",
-                "partOf": {
-                    "type": "manuscript",
-                    "doi": "10.7554/eLife.86628",
-                    "identifier": "86628",
-                    "subjectDisciplines": ["Biochemistry and Chemical Biology"],
-                    "published": "2023-04-11T14:00:00+00:00",
-                    "volumeIdentifier": "12",
-                    "electronicArticleIdentifier": "RP86628",
-                },
-            },
-        ]
-        self.assertEqual(result, expected)
-
-    def test_step_actions(self):
-        "get actions from the second step"
-        step_2 = parse.next_step(
-            self.d_json,
-            parse.next_step(self.d_json, parse.docmap_first_step(self.d_json)),
-        )
-        result = parse.step_actions(step_2)
-        self.assertEqual(len(result), 1)
-
-    def test_action_outputs(self):
-        "outputs from a step action"
-        first_step = parse.docmap_first_step(self.d_json)
-        first_action = parse.step_actions(first_step)[0]
-        result = parse.action_outputs(first_action)
-        self.assertEqual(len(result), 1)
-
-    def test_docmap_content(self):
-        "test parsing docmap JSON into docmap content structure"
-        result = parse.docmap_content(self.d_json)
-        expected = [
-            OrderedDict(
-                [
-                    ("type", "reply"),
-                    ("published", "2023-05-11T11:34:27.242112+00:00"),
-                    ("doi", "10.7554/eLife.86628.2.sa0"),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:yVioUu_vEe2vQTPxYtnZSw/content",
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "review-article"),
-                    ("published", "2023-05-11T11:34:28.135284+00:00"),
-                    ("doi", "10.7554/eLife.86628.2.sa1"),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:yeEcZO_vEe2Dxo8DxUJqTw/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "evaluation-summary"),
-                    ("published", "2023-05-11T11:34:28.903631+00:00"),
-                    ("doi", "10.7554/eLife.86628.2.sa2"),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:ylaROO_vEe2VSj_o0Xi_gA/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {
-                                    "type": "person",
-                                    "name": "Gary Yellen",
-                                    "firstName": "Gary",
-                                    "surname": "Yellen",
-                                    "_relatesToOrganization": "Harvard Medical School, United States of America",
-                                    "affiliation": {
-                                        "type": "organization",
-                                        "name": "Harvard Medical School",
-                                        "location": "Boston, United States of America",
-                                    },
-                                },
-                                "role": "editor",
-                            },
-                            {
-                                "actor": {
-                                    "type": "person",
-                                    "name": "David James",
-                                    "firstName": "David",
-                                    "_middleName": "E",
-                                    "surname": "James",
-                                    "_relatesToOrganization": "University of Sydney, Australia",
-                                    "affiliation": {
-                                        "type": "organization",
-                                        "name": "University of Sydney",
-                                        "location": "Sydney, Australia",
-                                    },
-                                },
-                                "role": "senior-editor",
-                            },
-                        ],
-                    ),
-                ]
-            ),
-        ]
-        self.assertEqual(result, expected)
-
-
 class TestDocmapSteps87356Sample(unittest.TestCase):
     def setUp(self):
         docmap_string = read_fixture("sample_docmap_for_87356.json", mode="r")
@@ -621,7 +361,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
     def test_docmap_steps(self):
         "get the steps of the docmap"
         result = parse.docmap_steps(self.d_json)
-        self.assertEqual(len(result), 9)
+        self.assertEqual(len(result), 10)
 
     def test_docmap_first_step(self):
         "get the first step according to the first-step value"
@@ -669,7 +409,11 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
         step_8 = parse.next_step(self.d_json, step_7)
         result = parse.step_inputs(step_8)
         self.assertEqual(len(result), 1)
-        self.assertEqual(step_8.get("next-step"), None)
+        # step _:b9
+        step_9 = parse.next_step(self.d_json, step_8)
+        result = parse.step_inputs(step_9)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(step_9.get("next-step"), None)
 
     def test_docmap_preprint(self):
         "preprint data from the first step inputs"
@@ -685,7 +429,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                 "content": [
                     {
                         "type": "computer-file",
-                        "url": "s3://transfers-elife/biorxiv_Current_Content/March_2023/28_Mar_23_Batch_1564/7f0e6d6d-6c0d-1014-992e-dc39f7990bd1.meca",
+                        "url": "s3://biorxiv-src-daily/Current_Content/March_2023/28_Mar_23_Batch_1564/7f0e6d6d-6c0d-1014-992e-dc39f7990bd1.meca",
                     }
                 ],
             },
@@ -733,7 +477,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                 "content": [
                     {
                         "type": "computer-file",
-                        "url": "s3://transfers-elife/biorxiv_Current_Content/March_2023/28_Mar_23_Batch_1564/7f0e6d6d-6c0d-1014-992e-dc39f7990bd1.meca",
+                        "url": "s3://biorxiv-src-daily/Current_Content/March_2023/28_Mar_23_Batch_1564/7f0e6d6d-6c0d-1014-992e-dc39f7990bd1.meca",
                     }
                 ],
             },
@@ -859,11 +603,13 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                             {
                                 "actor": {
                                     "type": "person",
+                                    "id": "https://orcid.org/0000-0002-2300-4536",
                                     "name": "Katalin Toth",
                                     "firstName": "Katalin",
                                     "surname": "Toth",
                                     "_relatesToOrganization": "University of Ottawa, Canada",
                                     "affiliation": {
+                                        "id": "https://ror.org/03c4mmv16",
                                         "type": "organization",
                                         "name": "University of Ottawa",
                                         "location": "Ottawa, Canada",
@@ -874,6 +620,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                             {
                                 "actor": {
                                     "type": "person",
+                                    "id": "https://orcid.org/0000-0002-4853-8913",
                                     "name": "Laura Colgin",
                                     "firstName": "Laura",
                                     "_middleName": "L",
@@ -902,6 +649,14 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                     ),
                 ]
             ),
+            OrderedDict(
+                [
+                    ("type", "preprint"),
+                    ("published", None),
+                    ("doi", "10.7554/eLife.87356.2"),
+                    ("web-content", None),
+                ]
+            ),
         ]
         self.assertEqual(result, expected)
 
@@ -923,461 +678,6 @@ class TestPreprintReviewDate(unittest.TestCase):
         "test case for steps but no assertions"
         d_json = {"first-step": "_:b0", "steps": {"_:b0": {"assertions": []}}}
         self.assertEqual(parse.preprint_review_date(d_json), None)
-
-
-class TestDocmapSteps446694(unittest.TestCase):
-    def setUp(self):
-        docmap_string = read_fixture("2021.06.02.446694.docmap.json", mode="r")
-        self.d_json = json.loads(docmap_string)
-
-    def test_docmap_steps(self):
-        "get the steps of the docmap"
-        result = parse.docmap_steps(self.d_json)
-        self.assertEqual(len(result), 1)
-
-    def test_docmap_first_step(self):
-        "get the first step according to the first-step value"
-        result = parse.docmap_first_step(self.d_json)
-        self.assertEqual(len(result), 3)
-        self.assertEqual(sorted(result.keys()), ["actions", "assertions", "inputs"])
-
-    def test_step_inputs(self):
-        "get inputs from the first step"
-        first_step = parse.docmap_first_step(self.d_json)
-        result = parse.step_inputs(first_step)
-        self.assertEqual(len(result), 1)
-
-    def test_docmap_preprint(self):
-        "preprint data from the first step inputs"
-        result = parse.docmap_preprint(self.d_json)
-        self.assertDictEqual(
-            result,
-            {
-                "doi": "10.1101/2021.06.02.446694",
-                "url": "https://doi.org/10.1101/2021.06.02.446694",
-            },
-        )
-
-    def test_docmap_latest_preprint(self):
-        "preprint data from the most recent step inputs"
-        result = parse.docmap_latest_preprint(self.d_json)
-        self.assertDictEqual(
-            result,
-            {
-                "doi": "10.1101/2021.06.02.446694",
-                "url": "https://doi.org/10.1101/2021.06.02.446694",
-            },
-        )
-
-    def test_step_actions(self):
-        "get actions from the first step"
-        first_step = parse.docmap_first_step(self.d_json)
-        result = parse.step_actions(first_step)
-        self.assertEqual(len(result), 5)
-
-    def test_action_outputs(self):
-        "outputs from a step action"
-        first_step = parse.docmap_first_step(self.d_json)
-        first_action = parse.step_actions(first_step)[0]
-        result = parse.action_outputs(first_action)
-        self.assertEqual(len(result), 1)
-
-    def test_docmap_content(self):
-        "test parsing docmap JSON into docmap content structure"
-        result = parse.docmap_content(self.d_json)
-        expected = [
-            OrderedDict(
-                [
-                    ("type", "review-article"),
-                    ("published", "2022-02-15T09:43:12.593Z"),
-                    ("doi", None),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:sQ7jVo5DEeyQwX8SmvZEzw/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "review-article"),
-                    ("published", "2022-02-15T09:43:13.592Z"),
-                    ("doi", None),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:saaeso5DEeyNd5_qxlJjXQ/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "review-article"),
-                    ("published", "2022-02-15T09:43:14.350Z"),
-                    ("doi", None),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:shmDUI5DEey0T6t05fjycg/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "evaluation-summary"),
-                    ("published", "2022-02-15T09:43:15.348Z"),
-                    ("doi", None),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:srHqyI5DEeyY91tQ-MUVKA/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {
-                                    "name": "Ronald L Calabrese",
-                                    "type": "person",
-                                    "_relatesToOrganization": "Emory University, United States",
-                                },
-                                "role": "senior-editor",
-                            },
-                            {
-                                "actor": {
-                                    "name": "Noah J Cowan",
-                                    "type": "person",
-                                    "_relatesToOrganization": "Johns Hopkins University, United States",
-                                },
-                                "role": "editor",
-                            },
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "reply"),
-                    ("published", "2022-02-15T11:24:05.730Z"),
-                    ("doi", None),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:ySfx9I5REeyOiqtIYslcxA/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-        ]
-        self.assertEqual(result, expected)
-
-    def test_output_content(self):
-        "test for all values for an output"
-        output_json = {
-            "type": "reply",
-            "published": "2022-02-15T11:24:05.730Z",
-            "content": [
-                {
-                    "type": "web-content",
-                    "url": "https://sciety.org/evaluations/hypothesis:ySfx9I5REeyOiqtIYslcxA/content",
-                }
-            ],
-        }
-        expected = OrderedDict(
-            [
-                ("type", "reply"),
-                ("published", "2022-02-15T11:24:05.730Z"),
-                ("doi", None),
-                (
-                    "web-content",
-                    "https://sciety.org/evaluations/hypothesis:ySfx9I5REeyOiqtIYslcxA/content",
-                ),
-            ]
-        )
-        result = parse.output_content(output_json)
-        self.assertEqual(result, expected)
-
-    def test_output_content_json_empty(self):
-        "test for blank output_json"
-        output_json = {}
-        expected = OrderedDict(
-            [
-                ("type", None),
-                ("published", None),
-                ("doi", None),
-                ("web-content", None),
-            ]
-        )
-        result = parse.output_content(output_json)
-        self.assertEqual(result, expected)
-
-    def test_output_content_no_content(self):
-        "test for content missing form the output_json"
-        output_json = {"type": "reply", "published": "2022-02-15T11:24:05.730Z"}
-        expected = OrderedDict(
-            [
-                ("type", "reply"),
-                ("published", "2022-02-15T11:24:05.730Z"),
-                ("doi", None),
-                ("web-content", None),
-            ]
-        )
-        result = parse.output_content(output_json)
-        self.assertEqual(result, expected)
-
-    def test_no_url(self):
-        "test if content url is missing"
-        output_json = {
-            "type": "reply",
-            "published": "2022-02-15T11:24:05.730Z",
-            "content": [
-                {
-                    "type": "web-content",
-                }
-            ],
-        }
-        expected = OrderedDict(
-            [
-                ("type", "reply"),
-                ("published", "2022-02-15T11:24:05.730Z"),
-                ("doi", None),
-                ("web-content", None),
-            ]
-        )
-        result = parse.output_content(output_json)
-        self.assertEqual(result, expected)
-
-
-class TestDocmapSteps512253(unittest.TestCase):
-    def setUp(self):
-        docmap_string = read_fixture("2022.10.17.512253.docmap.json", mode="r")
-        self.d_json = json.loads(docmap_string)
-
-    def test_docmap_steps(self):
-        "get the steps of the docmap"
-        result = parse.docmap_steps(self.d_json)
-        self.assertEqual(len(result), 3)
-
-    def test_docmap_first_step(self):
-        "get the first step according to the first-step value"
-        result = parse.docmap_first_step(self.d_json)
-
-        self.assertEqual(len(result), 4)
-        self.assertEqual(
-            sorted(result.keys()), ["actions", "assertions", "inputs", "next-step"]
-        )
-
-    def test_step_inputs(self):
-        "get inputs from the first step"
-        first_step = parse.docmap_first_step(self.d_json)
-        result = parse.step_inputs(first_step)
-        self.assertEqual(len(result), 0)
-        # step _:b1
-        step_1 = parse.next_step(self.d_json, first_step)
-        result = parse.step_inputs(step_1)
-        self.assertEqual(len(result), 1)
-        # step _:b2
-        step_2 = parse.next_step(self.d_json, step_1)
-        result = parse.step_inputs(step_2)
-        self.assertEqual(len(result), 1)
-        self.assertEqual(step_2.get("next-step"), None)
-
-    def test_step_assertions(self):
-        "get assertions from the first step"
-        first_step = parse.docmap_first_step(self.d_json)
-        result = parse.step_assertions(first_step)
-        self.assertEqual(len(result), 1)
-        # step _:b1
-        step_1 = parse.next_step(self.d_json, first_step)
-        result = parse.step_assertions(step_1)
-        self.assertEqual(len(result), 2)
-        # step _:b2
-        step_2 = parse.next_step(self.d_json, step_1)
-        result = parse.step_assertions(step_2)
-        self.assertEqual(len(result), 1)
-        self.assertEqual(step_2.get("next-step"), None)
-
-    def test_docmap_preprint(self):
-        "preprint data from the first step inputs"
-        result = parse.docmap_preprint(self.d_json)
-        self.assertDictEqual(
-            result,
-            {
-                "type": "preprint",
-                "doi": "10.1101/2022.10.17.512253",
-                "url": "https://www.biorxiv.org/content/10.1101/2022.10.17.512253v1",
-                "published": "2022-10-17",
-                "versionIdentifier": "1",
-                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/October_2022/18_Oct_22_Batch_1408/a6575018-6cfe-1014-94b3-ca3c122c1e09.meca",
-            },
-        )
-
-    def test_docmap_latest_preprint(self):
-        "preprint data from the most recent step inputs"
-        # this older docmap format is missing a published date and returns a blank dict
-        result = parse.docmap_latest_preprint(self.d_json)
-        self.assertDictEqual(result, {})
-
-    def test_docmap_preprint_history(self):
-        "list of preprint history event data"
-        result = parse.docmap_preprint_history(self.d_json)
-        expected = [
-            {
-                "type": "preprint",
-                "date": "2022-10-17",
-                "doi": "10.1101/2022.10.17.512253",
-                "url": "https://www.biorxiv.org/content/10.1101/2022.10.17.512253v1",
-                "published": "2022-10-17",
-                "versionIdentifier": "1",
-                "_tdmPath": "s3://transfers-elife/biorxiv_Current_Content/October_2022/18_Oct_22_Batch_1408/a6575018-6cfe-1014-94b3-ca3c122c1e09.meca",
-            },
-        ]
-        self.assertEqual(result, expected)
-
-    def test_step_actions(self):
-        "get actions from the last step"
-        step_2 = parse.next_step(
-            self.d_json,
-            parse.next_step(self.d_json, parse.docmap_first_step(self.d_json)),
-        )
-        result = parse.step_actions(step_2)
-        self.assertEqual(len(result), 4)
-
-    def test_action_outputs(self):
-        "outputs from a step action"
-        first_step = parse.docmap_first_step(self.d_json)
-        first_action = parse.step_actions(first_step)[0]
-        result = parse.action_outputs(first_action)
-        self.assertEqual(len(result), 1)
-
-    def test_docmap_content(self):
-        "test parsing docmap JSON into docmap content structure"
-        result = parse.docmap_content(self.d_json)
-        expected = [
-            OrderedDict(
-                [
-                    ("type", "review-article"),
-                    ("published", "2023-02-09T16:36:07.240248+00:00"),
-                    ("doi", "10.7554/eLife.84364.1.sa1"),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:2jRPwqiXEe2WiaPpkX9z0A/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "review-article"),
-                    ("published", "2023-02-09T16:36:08.237709+00:00"),
-                    ("doi", "10.7554/eLife.84364.1.sa2"),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:2ssR5qiXEe2eBA-GlPB-OA/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "review-article"),
-                    ("published", "2023-02-09T16:36:09.046089+00:00"),
-                    ("doi", "10.7554/eLife.84364.1.sa3"),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:20aozqiXEe2cFHOdrUiwoQ/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {"name": "anonymous", "type": "person"},
-                                "role": "peer-reviewer",
-                            }
-                        ],
-                    ),
-                ]
-            ),
-            OrderedDict(
-                [
-                    ("type", "evaluation-summary"),
-                    ("published", "2023-02-09T16:36:09.857359+00:00"),
-                    ("doi", "10.7554/eLife.84364.1.sa4"),
-                    (
-                        "web-content",
-                        "https://sciety.org/evaluations/hypothesis:28TBAKiXEe2gLa-4_Zmg3Q/content",
-                    ),
-                    (
-                        "participants",
-                        [
-                            {
-                                "actor": {
-                                    "name": "Michael Eisen",
-                                    "type": "person",
-                                    "_relatesToOrganization": "University of California, Berkeley, United States of America",
-                                },
-                                "role": "editor",
-                            },
-                            {
-                                "actor": {
-                                    "name": "Michael Eisen",
-                                    "type": "person",
-                                    "_relatesToOrganization": "University of California, Berkeley, United States of America",
-                                },
-                                "role": "senior-editor",
-                            },
-                        ],
-                    ),
-                ]
-            ),
-        ]
-        self.assertEqual(result, expected)
 
 
 class TestPreprintEventOutput(unittest.TestCase):
@@ -1575,11 +875,13 @@ class TestDocmapEditorData(unittest.TestCase):
             {
                 "actor": {
                     "type": "person",
+                    "id": "https://orcid.org/0000-0002-2300-4536",
                     "name": "Katalin Toth",
                     "firstName": "Katalin",
                     "surname": "Toth",
                     "_relatesToOrganization": "University of Ottawa, Canada",
                     "affiliation": {
+                        "id": "https://ror.org/03c4mmv16",
                         "type": "organization",
                         "name": "University of Ottawa",
                         "location": "Ottawa, Canada",
@@ -1590,6 +892,7 @@ class TestDocmapEditorData(unittest.TestCase):
             {
                 "actor": {
                     "type": "person",
+                    "id": "https://orcid.org/0000-0002-4853-8913",
                     "name": "Laura Colgin",
                     "firstName": "Laura",
                     "_middleName": "L",
@@ -1780,7 +1083,7 @@ class TestContentStep(unittest.TestCase):
 
 class TestPopulateDocmapContent(unittest.TestCase):
     def setUp(self):
-        docmap_string = read_fixture("2021.06.02.446694.docmap.json", mode="r")
+        docmap_string = read_fixture("sample_docmap_for_85111.json", mode="r")
         d_json = json.loads(docmap_string)
         self.content_json = parse.docmap_content(d_json)
 
