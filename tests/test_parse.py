@@ -555,7 +555,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                     ("doi", "10.7554/eLife.87356.2.sa0"),
                     (
                         "web-content",
-                        "https://sciety.org/evaluations/hypothesis:mMQFVqurEe65Hb8uZAUn5g/content",
+                        "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/evaluation/get-by-evaluation-id?evaluation_id=mMQFVqurEe65Hb8uZAUn5g",
                     ),
                     (
                         "participants",
@@ -575,7 +575,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                     ("doi", "10.7554/eLife.87356.2.sa1"),
                     (
                         "web-content",
-                        "https://sciety.org/evaluations/hypothesis:mTtSMqurEe6iznNoOhFN0A/content",
+                        "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/evaluation/get-by-evaluation-id?evaluation_id=mTtSMqurEe6iznNoOhFN0A",
                     ),
                     (
                         "participants",
@@ -595,7 +595,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                     ("doi", "10.7554/eLife.87356.2.sa2"),
                     (
                         "web-content",
-                        "https://sciety.org/evaluations/hypothesis:mbLBWqurEe6nJ4elisCokQ/content",
+                        "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/evaluation/get-by-evaluation-id?evaluation_id=mbLBWqurEe6nJ4elisCokQ",
                     ),
                     (
                         "participants",
@@ -645,7 +645,7 @@ class TestDocmapSteps87356Sample(unittest.TestCase):
                     ("doi", "10.7554/eLife.87356.2.sa3"),
                     (
                         "web-content",
-                        "https://sciety.org/evaluations/hypothesis:Q8aLqKvpEe6f1wOJpB7eFQ/content",
+                        "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/evaluation/get-by-evaluation-id?evaluation_id=Q8aLqKvpEe6f1wOJpB7eFQ",
                     ),
                 ]
             ),
@@ -997,6 +997,68 @@ class TestPreprintAlternateDate(unittest.TestCase):
     def test_none(self):
         step_json = None
         self.assertEqual(parse.preprint_alternate_date(step_json), None)
+
+
+class TestContentUrl(unittest.TestCase):
+    "tests for content_url()"
+
+    def test_content_url(self):
+        "test finding default content web-page URL"
+        content_json = [
+            {"type": "web-page", "url": "https://hypothes.is/a/mMQFVqurEe65Hb8uZAUn5g"},
+            {
+                "type": "web-page",
+                "url": "https://sciety.org/articles/activity/10.1101/2023.03.24.534142#hypothesis:mMQFVqurEe65Hb8uZAUn5g",
+            },
+            {
+                "type": "web-page",
+                "url": "https://sciety.org/evaluations/hypothesis:mMQFVqurEe65Hb8uZAUn5g/content",
+            },
+            {
+                "type": "web-page",
+                "url": "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/evaluation/get-by-evaluation-id?evaluation_id=mMQFVqurEe65Hb8uZAUn5g",
+            },
+        ]
+
+        # invoke
+        result = parse.content_url(content_json)
+        # assert
+        self.assertEqual(
+            result,
+            "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v2/evaluation/get-by-evaluation-id?evaluation_id=mMQFVqurEe65Hb8uZAUn5g",
+        )
+
+    def test_edge_cases(self):
+        "test comparing edge case values and non-default web-page URL"
+        content_json = [
+            {},
+            {"type": "web-page", "url:": ""},
+            {"type": "web-page", "url": "https://hypothes.is/a/mMQFVqurEe65Hb8uZAUn5g"},
+            {
+                "type": "web-page",
+                "url": "https://sciety.org/articles/activity/10.1101/2023.03.24.534142#hypothesis:mMQFVqurEe65Hb8uZAUn5g",
+            },
+            {
+                "type": "web-page",
+                "url": "https://sciety.org/evaluations/hypothesis:mMQFVqurEe65Hb8uZAUn5g/content",
+            },
+        ]
+
+        # invoke
+        result = parse.content_url(content_json)
+        # assert
+        self.assertEqual(
+            result,
+            "https://sciety.org/evaluations/hypothesis:mMQFVqurEe65Hb8uZAUn5g/content",
+        )
+
+    def test_empty_content_json(self):
+        "test if no content_json supplied"
+        content_json = []
+        # invoke
+        result = parse.content_url(content_json)
+        # assert
+        self.assertEqual(result, None)
 
 
 class TestOutputPartof(unittest.TestCase):

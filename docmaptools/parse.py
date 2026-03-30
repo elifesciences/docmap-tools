@@ -231,19 +231,31 @@ def action_outputs(action_json):
     return action_json.get("outputs")
 
 
+def content_url(content_json):
+    "from output content find the URL for HTML content"
+    if not content_json:
+        return None
+    web_content = None
+    for content in content_json:
+        if not content or not content.get("url"):
+            continue
+        # first preference
+        if "/get-by-evaluation-id?" in content.get("url"):
+            web_content = content.get("url")
+            break
+        # default preference
+        if content.get("url").endswith("/content"):
+            web_content = content.get("url")
+    return web_content
+
+
 def output_content(output_json):
     "extract web-content and metadata from an output"
     content_item = OrderedDict()
     content_item["type"] = output_json.get("type")
     content_item["published"] = output_json.get("published")
     content_item["doi"] = output_json.get("doi")
-    web_content = [
-        content.get("url", {})
-        for content in output_json.get("content", [])
-        if content and content.get("url") and content.get("url").endswith("/content")
-    ]
-    # use the first web-content for now
-    content_item["web-content"] = web_content[0] if len(web_content) >= 1 else None
+    content_item["web-content"] = content_url(output_json.get("content", []))
     return content_item
 
 
