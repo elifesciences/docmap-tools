@@ -409,6 +409,12 @@ class TestRepair(unittest.TestCase):
         content = convert.repair(string)
         self.assertEqual(content, expected)
 
+    def test_repair_hr_tag(self):
+        string = "<root><p></p><hr></root>"
+        expected = "<root><p></p><hr/></root>"
+        content = convert.repair(string)
+        self.assertEqual(content, expected)
+
     def test_repair_em_strong_mismatch(self):
         "test em strong mismatched close tags"
         string = '<root><p><em type="test"><strong>Hello!</em></strong></p></root>'

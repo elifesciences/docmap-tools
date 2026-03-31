@@ -208,6 +208,7 @@ def repair(string):
     "modify an XML string to be parsed without error"
     # replace tags with no close slash
     string = string.replace("<br>", "<br/>")
+    string = string.replace("<hr>", "<hr/>")
     # replace mismatched tags due to close tag order
     em_strong_tag_order_pattern = re.compile(
         r"<(em.*?)><(strong.*?)>(.*?</em></strong>)"
