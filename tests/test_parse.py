@@ -1191,7 +1191,7 @@ class TestTransformDocmapContent(unittest.TestCase):
                     ),
                     (
                         "html",
-                        b"<p><strong>Reviewer #3 (Public Review):</strong></p>\n<p>The ....</p>\n",
+                        b"<p><strong>Reviewer #3 (Public Review):</strong></p>\n<p>The ....</p>&nbsp;\n",
                     ),
                 ]
             ),
@@ -1200,7 +1200,7 @@ class TestTransformDocmapContent(unittest.TestCase):
             b"<root><front-stub><title-group><article-title>"
             b"Reviewer #3 (Public Review):"
             b"</article-title></title-group>\n</front-stub>"
-            b"<body><p>The ....</p>\n</body>"
+            b"<body><p>The ....</p> \n</body>"
             b"</root>"
         )
         result = parse.transform_docmap_content(content_json)

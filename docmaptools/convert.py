@@ -20,6 +20,9 @@ def html_string_to_element(bytes_string):
     "parse an HTML string to Element"
     string = bytes_string.decode("utf-8")
 
+    # replace entities
+    string = replace_entities(string)
+
     # register XML namespaces
     xmlio.register_xmlns()
 
@@ -31,6 +34,11 @@ def html_string_to_element(bytes_string):
         root = ElementTree.fromstring(repair(string))
 
     return root
+
+
+def replace_entities(string):
+    "modify HTML entities which will not convert to XML"
+    return string.replace("&nbsp;", " ")
 
 
 def html_to_xml(root):
