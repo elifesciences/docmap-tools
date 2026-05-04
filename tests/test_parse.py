@@ -1226,13 +1226,17 @@ class TestTransformDocmapContent(unittest.TestCase):
         ]
         xml_expected = None
 
-        result = parse.transform_docmap_content(content_json)
-        self.assertEqual(result[0].get("xml"), xml_expected)
+        with self.assertRaises(Exception):
+            parse.transform_docmap_content(content_json)
 
         log_file_lines = read_log_file_lines(self.log_file)
         self.assertEqual(
             log_file_lines[0],
-            "ERROR docmaptools:parse:transform_docmap_content: Failed to convert HTML to XML\n",
+            (
+                "ERROR docmaptools:parse:transform_docmap_content:"
+                " Failed to convert HTML to XML b'<p>Unmatched tag':"
+                " mismatched tag: line 1, column 24\n"
+            ),
         )
         self.assertEqual(log_file_lines[1], "Traceback (most recent call last):\n")
         self.assertTrue(
