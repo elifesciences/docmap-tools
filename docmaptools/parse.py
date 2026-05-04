@@ -329,8 +329,12 @@ def transform_docmap_content(content_json):
                 content_item["xml"] = convert.convert_html_string(
                     content_item.get("html")
                 )
-            except ParseError:
-                LOGGER.exception("Failed to convert HTML to XML")
+            except ParseError as exception:
+                LOGGER.exception(
+                    "Failed to convert HTML to XML %s: %s"
+                    % (content_item.get("html"), str(exception))
+                )
+                raise
             except:
                 LOGGER.exception("Unhandled exception")
                 raise
