@@ -1,5 +1,7 @@
 import unittest
 from xml.etree import ElementTree
+from xml.etree.ElementTree import ParseError
+from mock import patch
 from docmaptools import convert
 from tests.helpers import read_fixture
 
@@ -122,6 +124,28 @@ class TestConvertHtml(unittest.TestCase):
         )
         content = convert.convert_html_string(string)
         self.assertEqual(content, expected)
+
+
+class TestHtmlStringToElement(unittest.TestCase):
+    "tests for html_string_to_element()"
+
+    @patch("docmaptools.convert.repair")
+    def test_repair_exception(self, fake_repair):
+        "test if an exception is raised even after attempt to repair the XML"
+        fake_repair.return_value = ">"
+        xml_string = b"<br>"
+        # invoke
+        with self.assertRaises(ParseError) as mock_exception:
+            convert.html_string_to_element(xml_string)
+        # assert
+        the_exception = mock_exception.exception
+        self.assertEqual(
+            str(the_exception),
+            (
+                "Exception raised in html_string_to_element parsing repaired string '>':"
+                " syntax error: line 1, column 0"
+            ),
+        )
 
 
 class TestBreakTags(unittest.TestCase):

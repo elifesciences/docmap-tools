@@ -31,7 +31,13 @@ def html_string_to_element(bytes_string):
     try:
         root = ElementTree.fromstring(string)
     except ParseError:
-        root = ElementTree.fromstring(repair(string))
+        try:
+            root = ElementTree.fromstring(repair(string))
+        except ParseError as exception:
+            raise ParseError(
+                "Exception raised in html_string_to_element parsing repaired string '%s': %s"
+                % (repair(string), str(exception))
+            ) from exception
 
     return root
 

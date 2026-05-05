@@ -1235,13 +1235,15 @@ class TestTransformDocmapContent(unittest.TestCase):
             (
                 "ERROR docmaptools:parse:transform_docmap_content:"
                 " Failed to convert HTML to XML b'<p>Unmatched tag':"
-                " mismatched tag: line 1, column 24\n"
+                " Exception raised in html_string_to_element parsing repaired string"
+                " '<root><p>Unmatched tag</root>': mismatched tag: line 1, column 24\n"
             ),
         )
         self.assertEqual(log_file_lines[1], "Traceback (most recent call last):\n")
+
         self.assertTrue(
             log_file_lines[-1].startswith(
-                "xml.etree.ElementTree.ParseError: mismatched tag:"
+                "xml.etree.ElementTree.ParseError: Exception raised in"
             )
         )
 
