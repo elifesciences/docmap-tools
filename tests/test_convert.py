@@ -389,6 +389,11 @@ class TestReplaceTags(unittest.TestCase):
         expected = b"<root><italic /></root>"
         self.assertEqual(invoke_module_function(xml_string, "replace_tags"), expected)
 
+    def test_replace_tags_i(self):
+        xml_string = b"<root><i/></root>"
+        expected = b"<root><italic /></root>"
+        self.assertEqual(invoke_module_function(xml_string, "replace_tags"), expected)
+
     def test_replace_tags_strong(self):
         xml_string = b"<root><strong/></root>"
         expected = b"<root><bold /></root>"
