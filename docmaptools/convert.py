@@ -73,6 +73,8 @@ def replace_tags(root):
     "rename HTML tags to XML tags"
     for elem in root.findall(".//em"):
         elem.tag = "italic"
+    for elem in root.findall(".//i"):
+        elem.tag = "italic"
     for elem in root.findall(".//strong"):
         elem.tag = "bold"
     for elem in root.findall(".//a"):
