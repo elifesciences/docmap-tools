@@ -98,17 +98,25 @@ def replace_tags(root):
         if elem.find("p") is None or (
             elem.find("p") is not None and elem.text is not None
         ):
-            # copy the content to a p tag
-            p_tag = Element("p")
-            p_tag.text = elem.text
-            p_tag.tail = elem.tail
-            # remove old tag content
-            elem.text = None
-            elem.tail = None
-            # copy the tags to the p tag
-            for tag_index, child_tag in enumerate(elem.iterfind("*")):
-                # insert into the new tag
-                p_tag.insert(tag_index, child_tag)
+            # copy the content to a p tag if applicable
+            if elem.find("p") is None or (
+                elem.find("p") is not None
+                and elem.text is not None
+                and elem.text.strip() != ""
+            ):
+                p_tag = Element("p")
+                p_tag.text = elem.text
+                p_tag.tail = elem.tail
+                # remove old tag content
+                elem.text = None
+                elem.tail = None
+                # copy the tags to the p tag
+                for tag_index, child_tag in enumerate(elem.iterfind("*")):
+                    # insert into the new tag
+                    p_tag.insert(tag_index, child_tag)
+            else:
+                # otherwise use the p tag as written
+                p_tag = elem.find("p")
             # remove all old tags from the list-item
             for child_tag in elem.findall("*"):
                 elem.remove(child_tag)
