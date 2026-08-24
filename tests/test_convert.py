@@ -91,7 +91,7 @@ class TestConvertHtml(unittest.TestCase):
         "a more complicated li list with ext-link tags to copy over to the new p tag"
         string = (
             b"<ul>"
-            b"<li>"
+            b"<li>\n"
             b"In plants, ITPK enzymes catalyze the formation of 5-InsP7 from InP6 "
             b'<a href="https://pubmed.ncbi.nlm.nih.gov/34274522/">'
             b"https://pubmed.ncbi.nlm.nih.gov/34274522/"
@@ -108,7 +108,7 @@ class TestConvertHtml(unittest.TestCase):
             b"<body>"
             b'<list list-type="bullet">'
             b"<list-item>"
-            b"<p>In plants, ITPK enzymes catalyze the formation of 5-InsP7 from InP6 "
+            b"<p>\nIn plants, ITPK enzymes catalyze the formation of 5-InsP7 from InP6 "
             b'<ext-link ext-link-type="uri" xlink:href="https://pubmed.ncbi.nlm.nih.gov/34274522/">'
             b"https://pubmed.ncbi.nlm.nih.gov/34274522/"
             b"</ext-link>"
@@ -118,6 +118,35 @@ class TestConvertHtml(unittest.TestCase):
             b"</ext-link>."
             b"</p>"
             b"</list-item>"
+            b"</list>"
+            b"</body>"
+            b"</root>"
+        )
+        content = convert.convert_html_string(string)
+        self.assertEqual(content, expected)
+
+    def test_ordered_list(self):
+        "example of an ordered list containing various content"
+        string = (
+            b"<p>Paragraph.</p>"
+            b"<ol>\n"
+            b"<li>\n<p>\nOne.</p>"
+            b"</li>\n"
+            b"<li>\n<p>Two.</p>"
+            b"</li>\n"
+            b"</ol>"
+        )
+        expected = (
+            b"<root>"
+            b"<body>"
+            b"<p>Paragraph.</p>"
+            b'<list list-type="order">\n'
+            b"<list-item>\n"
+            b"<p>\nOne.</p>"
+            b"</list-item>\n"
+            b"<list-item>\n"
+            b"<p>Two.</p>"
+            b"</list-item>\n"
             b"</list>"
             b"</body>"
             b"</root>"
